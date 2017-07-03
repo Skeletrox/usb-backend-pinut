@@ -17,23 +17,33 @@ staticFileLoc = '/Programming/Scratch/file-upload-master/file-upload/file-upload
 staticFileLocRoot ='/home/'+'skeletrox'+staticFileLoc
 
 
-files_existing=[]
-list_of_files=[]
+#files_existing=[]
+#list_of_files=[]
+old_files = []
 files = []
 total_amount = 0
 total_done = 0
 count = 0
 
+class NoFilesError(ValueError):
+    def __init__ (self, arg = None):
+        self.strerror = arg
+        self.args = {arg}
+
 def index(request):
     return render(request,'fileupload/LOGIN.html')
 
 def verify(request):
-    user=User.objects.get(username=request.POST['email'])
-    logger = logging.getLogger(__name__)
-    password=request.POST['password']
+    try:
+        user=User.objects.get(username=request.POST['email'])
+        logger = logging.getLogger(__name__)
+        password=request.POST['password']
     #_,salt,hashpw=user.password.split('$')
-    logger.error(request.POST['email']+","+request.POST['password']+" \n next line")
-    logger.error(user.password+", username is "+user.username)
+        logger.error(request.POST['email']+","+request.POST['password']+" \n next line")
+        logger.error(user.password+", username is "+user.username)
+
+    except user.DoesNotExist:
+        user = None
     if(user is not None and user.check_password(password)):
         return HttpResponseRedirect('new/')
     else:
@@ -86,84 +96,157 @@ class EkFileListView(ListView):
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
- 
+
+def split_dirs(text):
+    splitty = text.split('/')
+    value = splitty[len(splitty) - 1]
+    return value
 
 def transfer(request):
     if request.method == 'GET' or request.method == 'POST':
-        global files_existing, files, total_amount, list_of_files
+        percentage_done = 0
+        global total_amount, total_done, count, files, old_files
+        files_existing = []
         if request.method == 'GET':
-            files = attemptMount()
+            new_files = attemptMount()
+            old_files = [fModel.file for fModel in EkFile.objects.all()]
+            files = [thing for thing in new_files if split_dirs(thing) not in old_files]
+            #old_files.extend(files)
             print 'Files are ' + str(files)
+            total_done = 0
             total_amount = len(files)
-        global total_done
-        global count
+            fileCount = 0
+        else:
+            fileCount = request.POST.get("file_descriptor", "")
         download_more = True
-        fileCount = request.POST.get("file_descriptor", "")
+        print '################################\nLength of files = ' + str(len(files)) + '\n----------------------------------'
+        print '--------------------------------\nValue of fileCount = ' + str(fileCount) + '\n----------------------------------'
+        print '--------------------------------\nValue of totalDone = ' + str(total_done) + '\n----------------------------------'
+        print '--------------------------------\nValue of totalAmount = ' + str(total_amount) + '\n################################'
+        '''
         if fileCount is None:
             fileCount = 0
+        '''
+
         file_to_transfer = None
         if len(files) > 0:
             for file in files:
                 if file != 'content.json':
-                    print 'Looking in EkFiles with file ' + file 
                     try:
-                        x =  EkFile.objects.get(file=file)
+                        value = split_dirs(file)
+                        #fModel = EkFile(id = count+1, file = str(value))
+                        print 'Looking in EkFiles with file ' + value
+                        x = EkFile.objects.get(file=str(value))
+                        print 'Duplicate found, please ignore'
+                        #files.remove(file)
                     except EkFile.DoesNotExist:
-                        x = None
+                        #x = '@CONST: FILEDOESNOTEXIST'
                         print 'Unique File Found!'
-                    if x == None:
                         file_size = os.stat(file).st_size
-                        fModel = EkFile(id = count+1, file = file)
-                    #fModel = File(id = count +1, file_link = file, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
+                        value = split_dirs(file)
+                        fModel = EkFile(id = count+1, file = str(value))
+                        print 'FModelled as ' + str(value)
                         count += 1
-                    #fModel.save()
                         files_existing.append(fModel)
             try:
+                if len(files_existing) == 0 and request.method == 'GET':
+                    raise NoFilesError
                 file_to_transfer = files[int(fileCount)]
                 print 'Attempting to transfer ' + str(file_to_transfer)
                 return_code = transfer_file(file_to_transfer)
                 if return_code != 0:
                     print 'USB unexpectedly removed!'
                     removeCorruptFile(file_to_transfer)
+            except NoFilesError as error:
+                #Bug report: This thing is being thrown after downloading files? 
+                print 'Aiyappa file illa pa'
+                template = loader.get_template('fileupload/downloadFiles.html')
+                total_files_in_db = EkFile.objects.all()
+                context = {
+                    'files_existing' : None,
+                    'show_output' : False,
+                    'percentage_done' : 0,
+                    'current_count' : 0,
+                    'btn_check_flag' : 'disabled',
+                    'download_more' : False,
+                }
+                return HttpResponse(template.render(context, request))
             except ValueError as error:
+                print 'Code should not come here ValueError'
                 fileCount = 0
                 file_to_transfer = files[int(fileCount)]
                 return_code = transfer_file(file_to_transfer)
                 if return_code != 0:
                     print 'USB unexpectedly removed!'
                     removeCorruptFile(file_to_transfer)
+                try:
+                    if fileCount == len(files):
+                        raise IndexError('Ashurbanipal, the king of Assyria')
+                except IndexError:
+                    print 'Yella mugithu andhre yaakappa illi barthiya neenu'
+                    download_more = None
+                    context = {
+                      #  'list_of_files' : list_of_files,
+                        'usb_mounted': True,
+                        'usb_mounted_text' : 'Transfer Files From USB',
+                    }
+                    template = loader.get_template('fileupload/ekfile_form.html')
+                    return HttpResponseRedirect('../new/')
             except IndexError as error:
+                print 'Yella mugithu aadhre code illi barabaaradu'
                 download_more = None
                 context = {
-                    'list_of_files' : list_of_files,
+                  #  'list_of_files' : list_of_files,
                     'usb_mounted': True,
                     'usb_mounted_text' : 'Transfer Files From USB',
                 }
                 template = loader.get_template('fileupload/ekfile_form.html')
-                return HttpResponseRedirect('../new/')
-        current_file_id = len(EkFile.objects.all())
-        total_done += 1
-        percentage_done = int(total_done*100/total_amount)
+                return HttpResponse('../new/')
+                #return HttpResponse(template.render(context, request))
+            current_file_id = len(EkFile.objects.all())
+            total_done += 1
+            percentage_done = int(total_done*100/total_amount)
         #Code below updates the file transferred list
         if file_to_transfer is not None:
+            value = split_dirs(file_to_transfer)
+            print '[+]About to save ' + value
             file_size = os.stat(file_to_transfer).st_size
-            file_to_save = EkFile(id = current_file_id, file = file_to_transfer)
+            file_to_save = EkFile(id = current_file_id, file = value)
             #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
             file_to_save.save()
-            list_of_files.append(file_to_save)
+            #list_of_files.append(file_to_save)
+            #files.remove(file_to_transfer)
         #Code above updates the file transferred list
         #return HttpResponseRedirect('new/')
-        template = loader.get_template('fileupload/downloadFiles.html')
-        total_files_in_db = EkFile.objects.all()
-        context = {
-        'files_existing' : files_existing,
-        'show_output' : download_more,
-        'percentage_done' : percentage_done,
-        'current_count' : total_done,
-        'btn_check_flag' : 'disabled',
-        'download_more' : download_more,
-        }
-        return HttpResponse(template.render(context, request))
+
+        if (total_done <= total_amount - 1 or len(files_existing) == 0):
+            print '[O] We still have files to download'
+            template = loader.get_template('fileupload/downloadFiles.html')
+            total_files_in_db = EkFile.objects.all()
+            context = {
+            'files_existing' : files_existing,
+            'show_output' : True,
+            'percentage_done' : percentage_done,
+            'current_count' : total_done,
+            'btn_check_flag' : 'disabled',
+            'download_more' : True,
+            }
+            return HttpResponse(template.render(context, request))
+
+
+        #Code below is for final condition
+        if total_done == total_amount and len(files_existing) > 0:
+            print 'Yella mugithu'
+            #old_files = files
+            download_more = None
+            context = {
+                #'list_of_files' : list_of_files,
+                'usb_mounted': True,
+                'usb_mounted_text' : 'Transfer Files From USB',
+            }
+            template = loader.get_template('fileupload/ekfile_form.html')
+            return HttpResponseRedirect('../new/')
+        #Code above is for final condition
     return HttpResponse("Please access this URL properly")
 
 def removeCorruptFile(file):
@@ -180,85 +263,8 @@ def delete_all(request):
         template = loader.get_template('checkUpdates/ekfile_form.html')
         total_files_in_db = EkFile.objects.all()
         context = {
-            'list_of_files' : total_files_in_db,
+           # 'list_of_files' : total_files_in_db,
             'usb_mounted': usb_mounted,
             'usb_mounted_text' : usb_mounted_text,
         }
         return HttpResponse(template.render(context, request))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-def transfer(request):
-    files=[]
-    #Returns list of files that correspond to requirements
-    files=attemptMount()
-    files_existing=[]
-    unique_files_existing=[]
-    unique_files=[]
-    if files is not None:
-        unique_files  = [file for file in files if file not in files_existing_names]
-    else:
-        unique_files = None
-    total_done = 0
-    if unique_files is not None:
-        for file1 in unique_files:
-            if file1 != 'content.json':
-                try:
-                    x =  File.objects.get(file_link=file)
-                except File.DoesNotExist:
-                    x = None
-                if x == None:
-
-                    fModel = EkFile(file = file1)
-                    fModel.save()
-                    unique_files_existing.append(fModel)
-    files_existing.append(unique_files_existing)
-    files_existing_names.append(unique_files)
-    if request.method == 'GET':
-            unique_files_existing
-            total_amount = len(files)
-            download_more = True
-            fileCount = request.POST.get("file_descriptor", "")
-            try:
-                return_code = transfer_file(files[int(fileCount)])
-                if return_code != 0:
-                    print ('USB unexpectedly removed!')
-                    return HttpResponse(content=data, status=400, content_type='application/json')
-            except IndexError as error:                                         #Thrown when there are no more files to #download 
-                download_more = None
-            total_done += 1
-            percentage_done = int(total_done*100/total_amount)
-            template = loader.get_template('checkUpdates/downloadFiles.html')
-            context = {
-            'files_existing' : unique_files_existing,
-            'show_output' : download_more,
-            'percentage_done' : percentage_done,
-            'current_count' : total_done,
-            'btn_check_flag' : 'disabled',
-            'download_more' : download_more,
-            }
-            return HttpResponseRedirect('new/')
-    return HttpResponse("Please access this URL properly")
-'''    
-
