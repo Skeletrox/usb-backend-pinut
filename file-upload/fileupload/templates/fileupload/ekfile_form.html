@@ -67,9 +67,10 @@
 {% upload_js %}
 
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="/static/js/ajax-utils.js"></script>
 <script src="/static/js/scripts.js"></script>
+<script src="jquery-3.2.1.min.js"></script>
 
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
 <script src="/static/js/vendor/jquery.ui.widget.js"></script>
@@ -103,19 +104,5 @@
 <script src="/static/js/main.js"></script>
 <script src="/static/js/locale.js"></script>
 <script src="/static/js/csrf.js"></script>
-<script>
-$(document).ready(function() {
-    var $input = $("#refresh");
-    $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
-    $.get('../verify_USB/', function (data) {
-            document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data);
-        };
-    $.get('verify_USB/', function (data) {
-                document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data);
-        });
-            
-    });  
-});
 
-</script>
 {% endblock %}

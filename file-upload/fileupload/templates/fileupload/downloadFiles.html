@@ -22,10 +22,9 @@
 					{% for file in files_existing %}
 						<p><b>{{ file.file }}: </b><!-- {{ file.file_desc }} --></p><br/>
 					{% endfor  %}
-					Press the button to download them.
 				<form action='../return_USB/' method="post" name="InitUSB">
 				{% csrf_token %}
-					<input type="submit" value="Download Files" class = "btn btn-info {{ btn_check_flag }}" align="center">
+					<!--input type="submit" value="Download Files" class = "btn btn-info {{ btn_check_flag }}" align="center"-->
 					{% if show_output %}
 					<!--{% for file in files_existing %} -->
 					<form action='../transfer/' method="post" name="TransferFiles">
