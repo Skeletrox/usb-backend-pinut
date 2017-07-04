@@ -3,7 +3,8 @@
 
 {% block content %}
 <div class="container">
-    <h1 id="h">File Upload</h1>
+    <h1 id="h">File Upload</h1><br/>
+    <div class="jumbotron">{{ text }}</div>
     <br>
     <!-- The file upload form used as target for the file upload widget -->
     <form id="fileupload" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
@@ -20,7 +21,7 @@
                     <i class="glyphicon glyphicon-upload"></i>
                     <span>Start upload</span>
                 </button>
-                <button type="button" class="btn btn-primay start" id="usb">
+                <button type="button" class="btn btn-primay start {{ usb_checked }}" id="usb">
                     <i class="glyphicon glyphicon-upload"></i>
                     <span>USB upload</span>
                 </button>
@@ -101,4 +102,11 @@
 <script src="/static/js/main.js"></script>
 <script src="/static/js/locale.js"></script>
 <script src="/static/js/csrf.js"></script>
+<script>
+window.onload = function() {
+   $.get('/verify_USB/', function (data) {
+    document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data)
+   })
+};
+</script>
 {% endblock %}
