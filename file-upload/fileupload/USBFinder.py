@@ -13,6 +13,13 @@ staticFileLoc = '/Programming/Scratch/file-upload-master/file-upload/file-upload
 staticFileLocRoot ='/home/'+'skeletrox'+staticFileLoc 									#Gives the entire static file root thus is multiuser friendly
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
+def check_if_line_usb(line):
+	UUID_beg = line.index('UUID') + 5
+	UUID_end = line.find('\"', UUID_beg+1)
+	if UUID_end - UUID_beg == 10:
+		return True
+	return False
+
 
 def transfer_file(file):
 	print ('Initiating file transfer')
@@ -23,7 +30,7 @@ def transfer_file(file):
 	proc.communicate()[0]
 	return proc.returncode
 	print ('File transfer complete!')
-
+'''
 def enableAutoMount():
 	fileLines = [ 'KERNEL!="sd[a-z][0-9]", GOTO="media_by_label_auto_mount_end" ',
 				  'IMPORT{program}="/sbin/blkid -o udev -p %N" ',
@@ -38,14 +45,17 @@ def enableAutoMount():
 	for line in fileLines:
 		f.write(line+'\n')
 	subprocess.Popen("udevadm control --reload-rules", shell=True)
-
+'''
 def attemptMount():			
 	global count																#Runs when USB is mounted
-	os.chdir('/media/')														#Returns the storage location [Should be same across all Linux devices]
+	os.chdir('/media/' + getpass.getuser())														#Returns the storage location [Should be same across all Linux devices]
 	blkid_output = subprocess.check_output("blkid", shell=True)
 	blkid_usb_line_list = blkid_output.split("\n")
 	blkid_usb_line = blkid_usb_line_list[len(blkid_usb_line_list) - 2]
 	print (blkid_usb_line)
+	is_usb = check_if_line_usb(blkid_usb_line)
+	if not is_usb:
+		return None
 	label_loc = blkid_usb_line.index("LABEL")
 	for i in range(label_loc, len(blkid_usb_line)):
 		if blkid_usb_line[i]	 == ' ':
@@ -54,8 +64,6 @@ def attemptMount():
 	print (usb_label)
 	folders = [name for name in os.listdir(".") if (name == usb_label and os.path.isdir(name))]
 	if len(folders) == 0:
-		enableAutoMount()
-
 		return None	
 	currentFolder = folders[0]
 	filedict=[]																					#A dictionary of all files
