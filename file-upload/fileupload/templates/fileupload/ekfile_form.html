@@ -2,6 +2,7 @@
 {% load upload_tags %}
 
 {% block content %}
+<input type="hidden" id="refresh" value="no">
 <div class="container">
     <h1 id="h">File Upload</h1><br/>
     <div class="jumbotron">{{ text }}</div>
@@ -103,8 +104,9 @@
 <script src="/static/js/locale.js"></script>
 <script src="/static/js/csrf.js"></script>
 <script>
-window.onload = function() {
-    alert('HAI');
+$(document).ready(function() {
+    var $input = $("#refresh");
+    $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
     $.get('../verify_USB/', function (data) {
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data);
         };
@@ -113,6 +115,7 @@ window.onload = function() {
         });
             
     });  
-};
+});
+
 </script>
 {% endblock %}
