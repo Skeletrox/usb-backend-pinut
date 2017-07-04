@@ -13,13 +13,12 @@
 	</head>
 	<body>
 		<div class="container-fluid" align="center">
-			<h1>USB Connectivity Checker</h1>
-			<p>This checks for USB connectivity [if it wasn't apparent already]</p>
+			<h1>USB File Transfer</h1>
 		
 		<div class="jumbotron">
 			{% if files_existing %}
 				<!-- Code to open a box and get the files here -->
-				<p>Supported files exist in the USB Drive attached to the machine. They are:
+				<p>Files being downloaded:
 					{% for file in files_existing %}
 						<p><b>{{ file.file }}: </b><!-- {{ file.file_desc }} --></p><br/>
 					{% endfor  %}
@@ -54,7 +53,7 @@
 						{% endif %}
 			{% else %}
 				<!-- Code to tell the user to come back later here -->
-				<p algin="center">There is no USB device attached to the Raspberry Pi<p>
+				<p algin="center">No new files are available through the USB. Insert new USB and refresh.<p>
 			{% endif %}
 		</div>
 		</div>

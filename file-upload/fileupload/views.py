@@ -25,6 +25,7 @@ total_amount = 0
 total_done = 0
 count = 0
 is_auth = False
+optional_flag = False
 percentage_done = 0
 
 class NoFilesError(ValueError):
@@ -35,9 +36,18 @@ class NoFilesError(ValueError):
 def index(request):
     return render(request,'fileupload/LOGIN.html')
 
-def verify(request):
+def verify(request, optional=False):
     flag='INIT'
-    global is_auth, user, password
+    global is_auth, user, password, optional_flag
+    if optional:
+        optional_flag = True
+        usb_checked = attemptMount()
+        usb_flag = 'disabled'
+        text = 'Please insert USB and refresh   '
+        if usb_checked is not None:
+            usb_flag = 'active'
+            text = 'Click USB Download to download files'
+        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': usb_flag, 'text':text})
     try:
         user=User.objects.get(username=request.POST['email'])
         logger = logging.getLogger(__name__)
@@ -53,7 +63,7 @@ def verify(request):
         #return HttpResponseRedirect('new/')
         usb_checked = attemptMount()
         usb_flag = 'disabled'
-        text = 'Please insert USB and refresh'
+        text = 'Please insert USB and refresh   '
         if usb_checked is not None:
             usb_flag = 'active'
             text = 'Click USB Download to download files'
@@ -193,6 +203,15 @@ def transfer(request):
                 except NoFilesError as error:
                     #Bug report: This thing is being thrown after downloading files? 
                     print 'Aiyappa file illa pa'
+                    global optional_flag
+                    if optional_flag:
+                        usb_checked = attemptMount()
+                        usb_flag = 'disabled'
+                        text = 'Please insert USB and refresh   '
+                        if usb_checked is not None:
+                            usb_flag = 'active'
+                            text = 'Click USB Download to download files'
+                        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': usb_flag, 'text':text})
                     template = loader.get_template('fileupload/downloadFiles.html')
                     total_files_in_db = EkFile.objects.all()
                     context = {
@@ -273,8 +292,10 @@ def transfer(request):
             if total_done == total_amount and len(files_existing) > 0:
                 print 'Yella mugithu'
                 #old_files = files
+                global optional_flag
+                optional_flag = True
                 download_more = None
-                return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
+                return verify(request, True)
             #Code above is for final condition
         return JsonResponse({'null':'null'})
     except OSError:

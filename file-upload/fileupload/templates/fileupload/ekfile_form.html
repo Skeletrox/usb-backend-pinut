@@ -104,9 +104,15 @@
 <script src="/static/js/csrf.js"></script>
 <script>
 window.onload = function() {
-   $.get('/verify_USB/', function (data) {
-    document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data)
-   })
+    alert('HAI');
+    $.get('../verify_USB/', function (data) {
+            document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data);
+        };
+    $.get('verify_USB/', function (data) {
+                document.getElementById("usb").setAttribute("class", "btn btn-primay start " + data);
+        });
+            
+    });  
 };
 </script>
 {% endblock %}
