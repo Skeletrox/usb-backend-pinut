@@ -126,9 +126,11 @@ def transfer(request):
     try:
         if not is_auth:
             return HttpResponse("Please access this URL properly")
+            '''
         elif percentage_done == 100:
             template = loader.get_template('fileupload/ekfile_form.html')
             return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
+            '''
         elif request.method == 'GET' or request.method == 'POST':
             global percentage_done
             global total_amount, total_done, count, files, old_files
@@ -140,17 +142,18 @@ def transfer(request):
                 old_files = [fModel.file for fModel in EkFile.objects.all()]
                 files = [thing for thing in new_files if split_dirs(thing) not in old_files]
                 #old_files.extend(files)
-                print 'Files are ' + str(files)
+                print '[Z] OldFiles are ' + str(old_files)
+                print '[Z] Files are ' + str(files)
                 total_done = 0
                 total_amount = len(files)
                 fileCount = 0
             else:
                 fileCount = request.POST.get("file_descriptor", "")
             download_more = True
-            print '################################\nLength of files = ' + str(len(files)) + '\n----------------------------------'
-            print '--------------------------------\nValue of fileCount = ' + str(fileCount) + '\n----------------------------------'
-            print '--------------------------------\nValue of totalDone = ' + str(total_done) + '\n----------------------------------'
-            print '--------------------------------\nValue of totalAmount = ' + str(total_amount) + '\n################################'
+            print '[Z]################################Length of files = ' + str(len(files)) + '----------------------------------'
+            print '[Z]--------------------------------Value of fileCount = ' + str(fileCount) + '----------------------------------'
+            print '[Z]--------------------------------Value of totalDone = ' + str(total_done) + '----------------------------------'
+            print '[Z]--------------------------------Value of totalAmount = ' + str(total_amount) + '################################'
             '''
             if fileCount is None:
                 fileCount = 0
@@ -158,29 +161,31 @@ def transfer(request):
 
             file_to_transfer = None
             if len(files) > 0:
+                temp_value = 0
                 for file in files:
                     if file != 'content.json':
                         try:
                             value = split_dirs(file)
                             #fModel = EkFile(id = count+1, file = str(value))
-                            print 'Looking in EkFiles with file ' + value
+                            print '[Z]Looking in EkFiles with file ' + value
                             x = EkFile.objects.get(file=str(value))
-                            print 'Duplicate found, please ignore'
+                            print '[Z]Duplicate found, please ignore ' + value
                             #files.remove(file)
                         except EkFile.DoesNotExist:
                             #x = '@CONST: FILEDOESNOTEXIST'
-                            print 'Unique File Found!'
+                            print 'Unique File ' + value + ' Found!'
                             file_size = os.stat(file).st_size
                             value = split_dirs(file)
-                            fModel = EkFile(id = count+1, file = str(value))
-                            print 'FModelled as ' + str(value)
-                            count += 1
-                            files_existing.append(fModel)
+                            fModel = EkFile(id = temp_value+1, file = str(value))
+                            print '[Z]FModelled as ' + str(value)
+                            temp_value += 1
+                            if fModel not in files_existing:
+                                files_existing.append(fModel)
                 try:
                     if len(files_existing) == 0 and request.method == 'GET':
                         raise NoFilesError
                     file_to_transfer = files[int(fileCount)]
-                    print 'Attempting to transfer ' + str(file_to_transfer)
+                    print '[Z]Attempting to transfer ' + str(file_to_transfer)
                     return_code = transfer_file(file_to_transfer)
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
@@ -199,6 +204,7 @@ def transfer(request):
                         'download_more' : False,
                     }
                     return HttpResponse(template.render(context, request))
+                '''
                 except ValueError as error:
                     print 'Code should not come here ValueError'
                     fileCount = 0
@@ -231,17 +237,18 @@ def transfer(request):
                     template = loader.get_template('fileupload/ekfile_form.html')
                     return HttpResponse('../new/')
                     #return HttpResponse(template.render(context, request))
-                current_file_id = len(EkFile.objects.all())
+                '''
+                count += 1
                 total_done += 1
                 percentage_done = int(total_done*100/total_amount)
             #Code below updates the file transferred list
             if file_to_transfer is not None:
                 value = split_dirs(file_to_transfer)
-                print '[+]About to save ' + value
                 file_size = os.stat(file_to_transfer).st_size
-                file_to_save = EkFile(id = current_file_id, file = value)
+                file_to_save = EkFile(id = count, file = value)
                 #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
                 file_to_save.save()
+                print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
             #Code above updates the file transferred list
@@ -275,14 +282,13 @@ def transfer(request):
                 template = loader.get_template('fileupload/ekfile_form.html')
                 return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
             #Code above is for final condition
-
     except OSError:
         template = loader.get_template('fileupload/ekfile_form.html')
         return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'Please remove USB only after file transfer is complete'})
 
 def removeCorruptFile(file):
     global staticFileLocRoot
-    delete_from_db_file  = EkFile.objects.get(file.split_dirs())
+    delete_from_db_file  = EkFile.objects.get(split_dirs(file))
     delete_from_db_file.delete()
     sendString = "rm " + staticFileLocRoot + file
     t = subprocess.Popen(sendString)
