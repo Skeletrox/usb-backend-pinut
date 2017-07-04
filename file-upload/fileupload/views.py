@@ -3,7 +3,7 @@ import logging
 
 from .USBFinder import attemptMount,transfer_file
 from hashlib import sha1
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from django.template import Context, loader
 from django.shortcuts import render,get_object_or_404
 from django.views.generic import CreateView, DeleteView, ListView
@@ -53,7 +53,7 @@ def verify(request):
         #return HttpResponseRedirect('new/')
         usb_checked = attemptMount()
         usb_flag = 'disabled'
-        text = 'Please insert USB and login again'
+        text = 'Please insert USB and refresh'
         if usb_checked is not None:
             usb_flag = 'active'
             text = 'Click USB Download to download files'
@@ -182,8 +182,8 @@ def transfer(request):
                             if fModel not in files_existing:
                                 files_existing.append(fModel)
                 try:
-                    if len(files_existing) == 0 and request.method == 'GET':
-                        raise NoFilesError
+                    if len(files_existing) == 0:
+                        raise NoFilesError('Maria Theresa')
                     file_to_transfer = files[int(fileCount)]
                     print '[Z]Attempting to transfer ' + str(file_to_transfer)
                     return_code = transfer_file(file_to_transfer)
@@ -274,14 +274,9 @@ def transfer(request):
                 print 'Yella mugithu'
                 #old_files = files
                 download_more = None
-                context = {
-                    #'list_of_files' : list_of_files,
-                    'usb_mounted': True,
-                    'usb_mounted_text' : 'Transfer Files From USB',
-                }
-                template = loader.get_template('fileupload/ekfile_form.html')
                 return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
             #Code above is for final condition
+        return JsonResponse({'null':'null'})
     except OSError:
         template = loader.get_template('fileupload/ekfile_form.html')
         return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'Please remove USB only after file transfer is complete'})
