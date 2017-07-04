@@ -126,7 +126,10 @@ def transfer(request):
     try:
         if not is_auth:
             return HttpResponse("Please access this URL properly")
-        if request.method == 'GET' or request.method == 'POST':
+        elif percentage_done == 100:
+            template = loader.get_template('fileupload/ekfile_form.html')
+            return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
+        elif request.method == 'GET' or request.method == 'POST':
             global percentage_done
             global total_amount, total_done, count, files, old_files
             files_existing = []
@@ -272,6 +275,7 @@ def transfer(request):
                 template = loader.get_template('fileupload/ekfile_form.html')
                 return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'active', 'text' : 'Insert another USB to download files if you want'})
             #Code above is for final condition
+
     except OSError:
         template = loader.get_template('fileupload/ekfile_form.html')
         return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'Please remove USB only after file transfer is complete'})
