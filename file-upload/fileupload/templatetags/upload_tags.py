@@ -69,7 +69,7 @@ def upload_js():
                 <i class="glyphicon glyphicon-trash"></i>
                 <span>{%=locale.fileupload.destroy%}</span>
             </button>
-            <input type="checkbox" name="delete" value="1" class="toggle">
+            <input type="checkbox" name="delete" value="1" class="toggle" checked="true" style="display:none">
         </td>
     </tr>
 {% } %}

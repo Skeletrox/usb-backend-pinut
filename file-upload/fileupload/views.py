@@ -109,6 +109,12 @@ class EkFileDeleteView(DeleteView):
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
 
+def delete_all(request):
+    if request.method == 'POST':
+        EkFile.objects.all().delete()
+        return HttpResponseRedirect('../new/')
+    return HttpResponse('Kaiko aise karta ba tu')
+
 
 class EkFileListView(ListView):
     model = EkFile
