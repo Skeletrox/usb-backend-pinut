@@ -13,8 +13,8 @@ from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 from django.urls import reverse
 
-staticFileLoc = '/Programming/Scratch/file-upload-master/file-upload/file-upload/media/'
-staticFileLocRoot ='/home/'+'skeletrox'+staticFileLoc
+staticFileLoc = '/file-upload/media/'
+staticFileLocRoot = os.getcwd()+staticFileLoc
 
 
 #files_existing=[]
