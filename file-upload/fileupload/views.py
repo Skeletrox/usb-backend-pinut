@@ -302,6 +302,7 @@ def transfer(request):
             #Code above is for final condition
         return JsonResponse({'null':'null'})
     except OSError:
+        return HttpResponseRedirect('../new/');
         template = loader.get_template('fileupload/ekfile_form.html')
         return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'Please remove USB only after file transfer is complete'})
 
