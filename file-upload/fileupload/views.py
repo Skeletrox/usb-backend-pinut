@@ -44,6 +44,7 @@ def verify(request, optional=False):
         usb_checked = attemptMount()
         usb_flag = 'disabled'
         text = 'Please insert USB and refresh   '
+        return HttpResponseRedirect('../new')
         if usb_checked is not None:
             usb_flag = 'active'
             text = 'Click USB Download to download files'
@@ -60,7 +61,7 @@ def verify(request, optional=False):
         flag = 'FAKE'
     if(flag == 'REAL' and user.check_password(password)):
         is_auth = True
-        #return HttpResponseRedirect('new/')
+        return HttpResponseRedirect('new/')
         usb_checked = attemptMount()
         usb_flag = 'disabled'
         text = 'Please insert USB and refresh   '
@@ -120,12 +121,13 @@ class EkFileListView(ListView):
         return response
 
 def verify_USB(request):
-    if request.type == 'GET':
-        value = attemptMount()
-        response_data = 'disabled'
-        if value is not None:
-            response_data = 'active '
-        return JsonResponse({'data':response_data})
+    value = attemptMount()
+    response_data = 'disabled'
+    response_text = 'Please insert USB and refresh'
+    if value is not None:
+        response_data = 'active '
+        response_text = 'Click USB Upload to upload files'
+    return JsonResponse({'data':response_data, 'usb_text' : response_text})
 
 def split_dirs(text):
     splitty = text.split('/')
@@ -208,6 +210,7 @@ def transfer(request):
                         usb_checked = attemptMount()
                         usb_flag = 'disabled'
                         text = 'Please insert USB and refresh   '
+                        return HttpResponseRedirect('../new')
                         if usb_checked is not None:
                             usb_flag = 'active'
                             text = 'Click USB Download to download files'
