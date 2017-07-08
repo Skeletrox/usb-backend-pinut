@@ -9,6 +9,7 @@ from django.shortcuts import render,get_object_or_404
 from django.views.generic import CreateView, DeleteView, ListView
 from .models import EkFile
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 from django.urls import reverse
@@ -32,6 +33,10 @@ class NoFilesError(ValueError):
     def __init__ (self, arg = None):
         self.strerror = arg
         self.args = {arg}
+
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect('../../upload/')
 
 def index(request):
     return render(request,'fileupload/LOGIN.html')
@@ -61,20 +66,11 @@ def verify(request, optional=False):
         flag = 'FAKE'
     if(flag == 'REAL' and user.check_password(password)):
         is_auth = True
-        return HttpResponseRedirect('new/')
-        usb_checked = attemptMount()
-        usb_flag = 'disabled'
-        text = 'Please insert USB and refresh   '
-        if usb_checked is not None:
-            usb_flag = 'active'
-            text = 'Click USB Download to download files'
-        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': usb_flag, 'text':text})
+        return HttpResponseRedirect('new/')    
     else:
         return render(request,'fileupload/LOGIN.html',{'invalid':'not a valid username or password',})
-        
-    
-    
-    
+
+
 class EkFileCreateView(CreateView):
     model = EkFile
     fields = "__all__"
@@ -217,10 +213,6 @@ def transfer(request):
                         usb_flag = 'disabled'
                         text = 'Please insert USB and refresh   '
                         return HttpResponseRedirect('../new')
-                        if usb_checked is not None:
-                            usb_flag = 'active'
-                            text = 'Click USB Download to download files'
-                        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': usb_flag, 'text':text})
                     template = loader.get_template('fileupload/downloadFiles.html')
                     total_files_in_db = EkFile.objects.all()
                     context = {
@@ -304,13 +296,11 @@ def transfer(request):
                 global optional_flag
                 optional_flag = True
                 download_more = None
-                return verify(request, True)
+                return HttpResponseRedirect('../new')
             #Code above is for final condition
         return JsonResponse({'null':'null'})
     except OSError:
         return HttpResponseRedirect('../new/');
-        template = loader.get_template('fileupload/ekfile_form.html')
-        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'Please remove USB only after file transfer is complete'})
 
 def removeCorruptFile(file):
     global staticFileLocRoot

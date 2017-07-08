@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^transfer/$', views.transfer, name="transfer"),
     url(r'^verify_USB/$', views.verify_USB, name="verifyusb"),
     url(r'^delete_all/$', views.delete_all, name="deletetout"),
+    url(r'^user_logout/$', views.user_logout, name='userlogout'),
 ]

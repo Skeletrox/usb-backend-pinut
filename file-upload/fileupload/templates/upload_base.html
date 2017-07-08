@@ -6,8 +6,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <![endif]-->
     <meta charset="utf-8">
-    <title>file upload</title>
-    <script src="jquery-3.2.1.min.js"></script>
+    <title>Administration</title>
+    <script>
+    $(function() {
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
+            hover: false, // Do not Activate on hover
+            gutter: 20, // Spacing from edge
+            belowOrigin: true, // Displays dropdown below the button
+            alignment: 'right', // Displays dropdown with edge aligned to the left of button
+            stopPropagation: false // Stops event propagation
+        });
+    });
+    </script>
+
+    
+    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper grey">
+            <span class="brand-logo center">Device Management</span>
+            <a class='dropdown-button brand-logo right' href='#' data-activates='dropdown_admin'><span>Admin menu</span><i class='large material-icons'>menu</i></a>
+            <ul id='dropdown_admin' class='dropdown-content' data-beloworigin='true' data-constrainWidth = 'false'>
+                <li><a href='../new/'>File Upload</a></li>
+                <li><a href='#'>Manage SSID</a></li>
+                <li><a href='../user_logout/'>Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+{% block content %}
+    <h1>No content set</h1>
+{% endblock %}
+</body> 
+<script src="jquery-3.2.1.min.js"></script>
+    <!-- Compiled and minified CSS for Material Design -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript for Material Design -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <!-- Icons for Material Design -->
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bars, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads and client-side image resizing. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap styles -->
@@ -20,14 +61,4 @@
     <link rel="stylesheet" href="/static/css/jquery.fileupload-ui.css">
     <!-- CSS adjustments for browsers with JavaScript disabled -->
     <noscript><link rel="stylesheet" href="/static/css/jquery.fileupload-ui-noscript.css"></noscript>
-    
-    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-<body>
-{% block content %}
-    <h1>No content set</h1>
-{% endblock %}
-
-</body> 
 </html>
