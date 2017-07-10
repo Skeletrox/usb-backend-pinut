@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', lambda x: HttpResponseRedirect('/upload/')),
     url(r'^upload/', include('fileupload.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^ssidmod/', include('ssidmod.urls')),
 ]
 
 if settings.DEBUG:

@@ -16,6 +16,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'ssidmod.apps.SsidmodConfig',
     'fileupload.apps.FileuploadConfig',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -7,22 +7,6 @@
     <![endif]-->
     <meta charset="utf-8">
     <title>Administration</title>
-    <script>
-    $(function() {
-        $('.dropdown-button').dropdown({
-            inDuration: 300,
-            outDuration: 225,
-            constrainWidth: false, // Does not change width of dropdown to that of the activator
-            hover: false, // Do not Activate on hover
-            gutter: 20, // Spacing from edge
-            belowOrigin: true, // Displays dropdown below the button
-            alignment: 'right', // Displays dropdown with edge aligned to the left of button
-            stopPropagation: false // Stops event propagation
-        });
-    });
-    </script>
-
-    
     <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
@@ -30,10 +14,10 @@
     <nav>
         <div class="nav-wrapper grey">
             <span class="brand-logo center">Device Management</span>
-            <a class='dropdown-button brand-logo right' href='#' data-activates='dropdown_admin'><span>Admin menu</span><i class='large material-icons'>menu</i></a>
-            <ul id='dropdown_admin' class='dropdown-content' data-beloworigin='true' data-constrainWidth = 'false'>
+            <a class='dropdown-button brand-logo right' href='#' data-activates='dropdown_admin' data-beloworigin='true' data-constrainWidth = 'false'><span>Admin menu</span><i class='large material-icons'>menu</i></a>
+            <ul id='dropdown_admin' class='dropdown-content'>
                 <li><a href='../new/'>File Upload</a></li>
-                <li><a href='#'>Manage SSID</a></li>
+                <li><a href='../../ssidmod/'>Manage SSID</a></li>
                 <li><a href='../user_logout/'>Logout</a></li>
             </ul>
         </div>
