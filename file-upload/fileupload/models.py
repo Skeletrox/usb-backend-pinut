@@ -16,7 +16,7 @@ def get_extension(name):
 
 
 class EkFile(models.Model):
-    file = models.FileField(upload_to="pictures")
+    file = models.FileField(upload_to="/var/www/ekstep/")
     slug = models.SlugField(max_length=50, blank=True)
     #link = models.CharField(max_length=500, default='NULL')
     #file_type = models.CharField(max_length=10, default='N/A')

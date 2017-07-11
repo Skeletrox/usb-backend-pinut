@@ -10,7 +10,7 @@ from shutil import copy2		 																#Copies files
 process = None
 staticFileLoc = '/file-upload/media/'
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
-staticFileLocRoot = os.getcwd()+staticFileLoc 									#Gives the entire static file root thus is multiuser friendly
+staticFileLocRoot = '/var/www/ekstep/'								#Gives the entire static file root thus is multiuser friendly
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
 def check_if_line_usb(line):

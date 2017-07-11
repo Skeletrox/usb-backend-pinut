@@ -15,7 +15,7 @@ from .serialize import serialize
 from django.urls import reverse
 
 staticFileLoc = '/file-upload/media/'
-staticFileLocRoot = os.getcwd()+staticFileLoc
+staticFileLocRoot = '/var/www/ekstep/'
 
 
 #files_existing=[]
