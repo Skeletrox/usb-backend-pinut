@@ -87,5 +87,5 @@ STATICFILES_DIRS = [
     'file-upload/static',
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'file-upload', 'media')
+MEDIA_URL = '/var/www/ekstep/'
+MEDIA_ROOT = MEDIA_URL

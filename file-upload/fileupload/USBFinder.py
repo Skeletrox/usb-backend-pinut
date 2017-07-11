@@ -8,7 +8,7 @@ import threading																				#Multithreading
 from shutil import copy2		 																#Copies files
 
 process = None
-staticFileLoc = '/file-upload/media/'
+#staticFileLoc = '/file-upload/media/'
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
 staticFileLocRoot = '/var/www/ekstep/'								#Gives the entire static file root thus is multiuser friendly
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
@@ -16,6 +16,7 @@ count = 0																						#Total number of threads called from main thread,
 def check_if_line_usb(line):
 	UUID_beg = line.index('UUID') + 5
 	UUID_end = line.find('\"', UUID_beg+1)
+	print str(UUID_end - UUID_beg)
 	if UUID_end - UUID_beg == 10:
 		return True
 	return False
@@ -25,7 +26,7 @@ def transfer_file(file):
 	print ('Initiating file transfer')
 		#files = [file for file in os.listdir(".") if not os.path.isdir(file)]					#Copies only files as we use a flat filesystem.
 		#for file in files:
-	sendString = "cp " + file + " " + staticFileLocRoot
+	sendString = "cp " + file + " " + staticFileLocRoot + file
 	proc = subprocess.Popen (sendString, shell=True )									#Enhanced copy function
 	proc.communicate()[0]
 	return proc.returncode
@@ -58,7 +59,7 @@ def attemptMount():
 		return None
 	label_loc = blkid_usb_line.index("LABEL")
 	for i in range(label_loc, len(blkid_usb_line)):
-		if blkid_usb_line[i]	 == ' ':
+		if blkid_usb_line[i] == ' ':
 			break
 	usb_label = blkid_usb_line[label_loc+7:i-1]
 	print (usb_label)
@@ -86,7 +87,7 @@ def attemptRemoval():																			#Removes files
 	'''
 
 def main():
-	enableAutoMount()
+	#enableAutoMount()
 	df = subprocess.check_output("lsusb", stderr=subprocess.STDOUT)								#suprocess prints to stderr for some reason, making it think stdout is stderr
 	oldDeviceList = df.split("\n")																#gets list of previously connected usb devices
 	while True:

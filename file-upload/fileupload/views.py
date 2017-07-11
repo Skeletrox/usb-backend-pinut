@@ -15,7 +15,7 @@ from .serialize import serialize
 from django.urls import reverse
 from .extract import extractit
 
-staticFileLoc = '/file-upload/media/'
+#staticFileLoc = '/file-upload/media/'
 staticFileLocRoot = '/var/www/ekstep/'
 
 
@@ -77,7 +77,6 @@ class EkFileCreateView(CreateView):
     fields = "__all__"
 
     def form_valid(self, form):
-        
         self.object = form.save()
         print self.object
         files = [serialize(self.object)]
@@ -89,6 +88,7 @@ class EkFileCreateView(CreateView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
+	print data + ' omg fail '
         return HttpResponse(content=data, status=400, content_type='application/json')
 
 
@@ -206,7 +206,7 @@ def transfer(request):
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
                         removeCorruptFile(file_to_transfer)
-                        extractit(staticFileLocRoot + file_to_transfer)
+                    extractit(staticFileLocRoot + file_to_transfer)
                 except NoFilesError as error:
                     #Bug report: This thing is being thrown after downloading files? 
                     print 'Aiyappa file illa pa'
@@ -237,6 +237,7 @@ def transfer(request):
                 file_to_save = EkFile(id = count, file = value)
                 #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
                 file_to_save.save()
+                extractit(file_to_save.link)
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
