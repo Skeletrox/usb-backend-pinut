@@ -13,6 +13,7 @@ from django.contrib.auth import logout
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 from django.urls import reverse
+from .extract import extractit
 
 staticFileLoc = '/file-upload/media/'
 staticFileLocRoot = '/var/www/ekstep/'
@@ -200,10 +201,12 @@ def transfer(request):
                         raise NoFilesError('Maria Theresa')
                     file_to_transfer = files[int(fileCount)]
                     print '[Z]Attempting to transfer ' + str(file_to_transfer)
+
                     return_code = transfer_file(file_to_transfer)
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
                         removeCorruptFile(file_to_transfer)
+                        extractit(staticFileLocRoot + file_to_transfer)
                 except NoFilesError as error:
                     #Bug report: This thing is being thrown after downloading files? 
                     print 'Aiyappa file illa pa'
@@ -224,40 +227,6 @@ def transfer(request):
                         'download_more' : False,
                     }
                     return HttpResponse(template.render(context, request))
-                '''
-                except ValueError as error:
-                    print 'Code should not come here ValueError'
-                    fileCount = 0
-                    file_to_transfer = files[int(fileCount)]
-                    return_code = transfer_file(file_to_transfer)
-                    if return_code != 0:
-                        print 'USB unexpectedly removed!'
-                        removeCorruptFile(file_to_transfer)
-                    try:
-                        if fileCount == len(files):
-                            raise IndexError('Ashurbanipal, the king of Assyria')
-                    except IndexError:
-                        print 'Yella mugithu andhre yaakappa illi barthiya neenu'
-                        download_more = None
-                        context = {
-                          #  'list_of_files' : list_of_files,
-                            'usb_mounted': True,
-                            'usb_mounted_text' : 'Transfer Files From USB',
-                        }
-                        template = loader.get_template('fileupload/ekfile_form.html')
-                        return HttpResponseRedirect('../new/')
-                except IndexError as error:
-                    print 'Yella mugithu aadhre code illi barabaaradu'
-                    download_more = None
-                    context = {
-                      #  'list_of_files' : list_of_files,
-                        'usb_mounted': True,
-                        'usb_mounted_text' : 'Transfer Files From USB',
-                    }
-                    template = loader.get_template('fileupload/ekfile_form.html')
-                    return HttpResponse('../new/')
-                    #return HttpResponse(template.render(context, request))
-                '''
                 count += 1
                 total_done += 1
                 percentage_done = int(total_done*100/total_amount)

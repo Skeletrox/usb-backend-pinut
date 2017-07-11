@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^upload/', include('fileupload.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ssidmod/', include('ssidmod.urls')),
+    url(r'^changecaptive/', include('changecaptive.urls')),
 ]
 
 if settings.DEBUG:

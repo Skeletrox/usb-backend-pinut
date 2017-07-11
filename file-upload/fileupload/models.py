@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from .extract import extractit
 import os
 
 def get_extension(name):
@@ -16,7 +17,7 @@ def get_extension(name):
 
 
 class EkFile(models.Model):
-    file = models.FileField(upload_to="/var/www/ekstep/")
+    file = models.FileField(upload_to="../../../../../var/www/ekstep/")
     slug = models.SlugField(max_length=50, blank=True)
     #link = models.CharField(max_length=500, default='NULL')
     #file_type = models.CharField(max_length=10, default='N/A')
@@ -30,14 +31,16 @@ class EkFile(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.file.name
-        self.link = os.getcwd()+'file-upload/media/' + self.slug
+        self.link = '/var/www/ekstep' + self.slug
         self.file_type = get_extension(self.slug)
         print 'EXTENSION IS ' + self.file_type
         print 'SAVED AS ' + self.slug
         #print 'ALSO KNOWN AS ' + self.file
         metadata = FileMetaData(self)
         metadata.save(self)
+        extractit(self.link)
         super(EkFile, self).save(*args, **kwargs)
+
 
     def delete(self, *args, **kwargs):
         """delete -- Remove to leave file."""
