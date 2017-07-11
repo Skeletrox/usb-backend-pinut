@@ -26,7 +26,7 @@
 			document.getElementById('logo_name').innerHTML = returnName(this.value);
 			var fr = new FileReader();
 			fr.onload = function(e) {
-				document.getElementById('pic_thumbnail').innerHTML = '<br><img src = "' + e.target.result + '" height="135px" width="180px">'
+				document.getElementById('pic_thumbnail').innerHTML = '<hr>Preview:<hr><br><img src = "' + e.target.result + '" height="135px" width="180px">'
 			}
 			fr.readAsDataURL(this.files[0]);
 		};
@@ -49,13 +49,13 @@
 </head>
 <body>
 	<h1 align='CENTER'>Customize Captive Portal</h1>
-		<input type="file" name="file" accept=".png" class="filestuff" id="name" form="formdata">
-		<input type="file" name="file" accept=".apk" class="filestuff" id="name_apk" form="formdata">
+		<input type="file" accept=".png" class="filestuff" id="name" form="formdata">
+		<input type="file" accept=".apk" class="filestuff" id="name_apk" form="formdata">
 	<div class="container">
 		<button class = "btn btn-success" id="files_add" onclick="openFiles()">
         	<i class="glyphicon glyphicon-plus"></i>
         	<span>Add logo</span>
-		</button><a id="pic_thumbnail" href=""></a><p id="logo_name">No file chosen</p>
+		</button><div id="pic_thumbnail" href=""></div><p id="logo_name">No file chosen</p>
 		<br /><hr/>
 		<form id='formdata' method='POST' action='change_data/' enctype='multipart/form-data'>
 		{% csrf_token %}

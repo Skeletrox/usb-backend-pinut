@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
+import subprocess
 
 # Create your views here.
 status_text = None
@@ -11,6 +12,19 @@ def write_to_file(filename, data):
 	file_to_write = open('changecaptive/static/changecaptive/' + filename, 'wb+')
 	file_to_write.write(data)
 	file_to_write.close()
+	if filename.endswith(".png"):
+		command = 'ffmpeg -i changecaptive/static/changecaptive/logo.png -vf scale=90:31 changecaptive/static/changecaptive/logo2.png -y'
+		process = subprocess.Popen(command, shell=True)
+		process.communicate()[0]
+		result = process.returncode
+		if result == 0:
+			print 'Modded the pic'
+			command2 = 'mv -f changecaptive/static/changecaptive/logo2.png changecaptive/static/changecaptive/logo.png'
+			process2 = subprocess.Popen(command2, shell=True)
+			process2.communicate()[0]
+			print 'Replaced original with mod'
+			result = process2.returncode
+			print '##############################\n' + str(result) + '###########################'
 
 def captive_display(request):
 	heading = ""
@@ -22,12 +36,12 @@ def captive_display(request):
 	try:
 		logoexists = open('changecaptive/static/changecaptive/logo.png', 'rb')
 		logo = True
-	except OSError:
+	except IOError:
 		logo = False
 	try:
 		apkexists = open('changecaptive/static/changecaptive/app.apk', 'rb')
 		apk = True
-	except OSError:
+	except IOError:
 		apk = False
 	return render(request, 'changecaptive/captiveportal.html', {'logo': logo, 'heading_text':heading, 'body_text': text, 'apk': apk, 'fail_text' : fail_text, 'status_text' : status_text})
 
