@@ -175,7 +175,9 @@ def verify_USB(request):
 def download_to_USB(request):
     usb_name = get_usb_name()
     if usb_name is not None:
-        local_files_dir = '/home/' + getpass.getuser() + '/FILES/'
+        local_files_dir = getpass.getuser() + '/FILES/'
+        if os.geteuid != 0:
+            local_files_dir = '/home/' + getpass.getuser() + '/FILES/'
         local_files = []
         for root, folders, files in os.walk(local_files_dir):
             for file in files:
