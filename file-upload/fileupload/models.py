@@ -31,7 +31,7 @@ class EkFile(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.file.name
-        self.link = '/var/www/ekstep/' + self.slug
+        self.link = '/var/www/ekstep/ecar_files/' + self.slug
         self.file_type = get_extension(self.slug)
         print 'EXTENSION IS ' + self.file_type
         print 'SAVED AS ' + self.slug
