@@ -30,3 +30,9 @@ document.querySelector("#usb")
         window.open("http://127.0.0.1:8000/upload/transfer/", "_self");
         });
 
+document.getElementById('usb_down').addEventListener('click', function() {
+      $.getJSON('../download_to_usb/', function (response) {
+            var obj = JSON.parse(JSON.stringify(response));
+              document.getElementById("usb_text").innerHTML = obj.res;
+        });
+})

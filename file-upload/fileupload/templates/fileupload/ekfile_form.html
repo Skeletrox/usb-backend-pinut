@@ -26,6 +26,10 @@
                     <i class="glyphicon glyphicon-upload"></i>
                     <span>USB upload</span>
                 </button>
+                <button type="button" class="btn btn-primay start {{ usb_checked }}" id="usb_down">
+                    <i class="glyphicon glyphicon-download"></i>
+                    <span>USB download</span>
+                </button>
                 <!--button type="reset" class="btn btn-warning cancel">
                     <i class="glyphicon glyphicon-ban-circle"></i>
                     <span>Cancel upload</span>
@@ -109,6 +113,7 @@ $(function() {
     $.getJSON('../verify_USB/', function (response) {
             var obj = JSON.parse(JSON.stringify(response));
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + obj.data);
+            document.getElementById("usb_down").setAttribute("class", "btn btn-primay start " + obj.data);
             document.getElementById("usb_text").innerHTML = obj.usb_text;
         });
         /*

@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^verify_USB/$', views.verify_USB, name="verifyusb"),
     url(r'^delete_all/$', views.delete_all, name="deletetout"),
     url(r'^user_logout/$', views.user_logout, name='userlogout'),
+    url (r'^download_to_usb/$', views.download_to_USB, name='downloadtousb'),
 ]

@@ -1,7 +1,7 @@
-import json, os, subprocess
+import json, os, subprocess, getpass
 import logging
 
-from .USBFinder import attemptMount,transfer_file
+from .USBFinder import attemptMount,transfer_file, get_usb_name
 from hashlib import sha1
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from django.template import Context, loader
@@ -133,6 +133,33 @@ def verify_USB(request):
         response_data = 'active '
         response_text = 'Click USB Upload to upload files'
     return JsonResponse({'data':response_data, 'usb_text' : response_text})
+
+def download_to_USB(request):
+    usb_name = get_usb_name()
+    if usb_name is not None:
+        local_files_dir = '/home/' + getpass.getuser() + '/FILES/'
+        local_files = []
+        for root, folders, files in os.walk(local_files_dir):
+            for file in files:
+                if (not os.path.isdir(file)) and file.endswith(".json"):
+                    local_files.append(os.path.join(root, file))
+        actual_index = local_files[0].split('/').index('FILES') + 1
+        for file in local_files:
+            os.chdir('/media/' + getpass.getuser() + '/' + usb_name)
+            split_list = file.split('/')
+            for i in range (actual_index, len(split_list) - 1):
+                if not os.path.exists(split_list[i]):
+                    os.makedirs(split_list[i])
+                os.chdir(split_list[i])
+            command = 'cp "' + file + '" "' + os.getcwd() + '"'
+            t = subprocess.Popen(command, shell=True)
+            t.communicate()[0]
+            result = t.returncode
+            if result != 0:
+                return JsonResponse ({'res': 'Copy aborted! [USB Unplugged/Insufficient Space?]'})
+        return JsonResponse({'res': 'Copy successful'})
+    return JsonResponse({'res':'Reinsert USB'})
+
 
 def split_dirs(text):
     splitty = text.split('/')

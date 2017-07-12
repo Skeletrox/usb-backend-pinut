@@ -13,6 +13,22 @@ process = None
 staticFileLocRoot = '/var/www/ekstep/'								#Gives the entire static file root thus is multiuser friendly
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
+def get_usb_name():
+	blkid_output = subprocess.check_output("blkid", shell=True)
+	blkid_usb_line_list = blkid_output.split("\n")
+	blkid_usb_line = blkid_usb_line_list[len(blkid_usb_line_list) - 2]
+	print (blkid_usb_line)
+	is_usb = check_if_line_usb(blkid_usb_line)
+	if not is_usb:
+		return None
+	label_loc = blkid_usb_line.index("LABEL")
+	for i in range(label_loc, len(blkid_usb_line)):
+		if blkid_usb_line[i] == ' ':
+			break
+	usb_label = blkid_usb_line[label_loc+7:i-1]
+	return usb_label
+
+
 def check_if_line_usb(line):
 	UUID_beg = line.index('UUID') + 5
 	UUID_end = line.find('\"', UUID_beg+1)
