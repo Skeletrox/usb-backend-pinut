@@ -127,11 +127,15 @@ $.ajaxSetup({
 	//	var logofile = document.getElementById('name').files[0];
 	//	alert(logofile);
 	//	sendfile(logofile, 'change_logo/');
-		var logofile = document.getElementById('name').files[0];
-		sendfile(logofile, 'change_logo/');
-		var apkfile = document.getElementById('name_apk').files[0];
-		sendfile(apkfile, 'change_apk/');
-		document.getElementById('formdata').submit();
+		if (document.getElementById("logo_name").innerHTML != 'No file chosen') {
+			var logofile = document.getElementById('name').files[0];
+			sendfile(logofile, 'change_logo/');
+		}
+		if (document.getElementById("logo_name_apk").innerHTML != 'No file chosen') {
+			var apkfile = document.getElementById('name_apk').files[0];
+			sendfile(apkfile, 'change_apk/');
+			document.getElementById('formdata').submit();
+		}
 	};
 
 $('form').submit(function(e){
