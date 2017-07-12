@@ -45,6 +45,8 @@ def extractit(path_of_file):
 	content_path=file_path[:index]
 	content_path+="/content"
 
+	#files list 
+
 	#move the contents of the ekstep file uploaded folder
 
 	for filename in os.listdir(folder):
@@ -57,3 +59,6 @@ def extractit(path_of_file):
 	
 	#remove's the ekstep file uploaded folder which is empty right now 
 	shutil.rmtree(folder)
+	#name of the folder which we got after extracting .ecar file
+	return change_name
+	

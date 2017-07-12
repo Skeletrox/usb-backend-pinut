@@ -84,6 +84,8 @@ class EkFileCreateView(CreateView):
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         print 'Before you send post request'
+        print self.object.link
+        extractit(self.object.link)
         return response
 
     def form_invalid(self, form):

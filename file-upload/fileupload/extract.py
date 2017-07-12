@@ -1,7 +1,7 @@
 import zipfile,os,shutil
 
 def extractit(path_of_file):
-
+	print 'BEGAN EXTRACTION'
 	#ekstep file uploaded path obtained using file.path
 	file_path=path_of_file
 
