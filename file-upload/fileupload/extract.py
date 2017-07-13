@@ -1,4 +1,5 @@
 import zipfile,os,shutil
+from .models import Content, EkFile
 
 def extractit(path_of_file):
 
@@ -11,7 +12,6 @@ def extractit(path_of_file):
 
 	#folder name
 	folder=file_path[:index]
-
 
 	#create a folder for the ekstep file uploaded uisng its own name
 	os.makedirs(folder)
@@ -44,6 +44,8 @@ def extractit(path_of_file):
 	index=file_path.find("/ecar_files")
 	content_path=file_path[:index]
 	content_path+="/content"
+	content_object = Content(ekfile = EkFile.objects.get(slug = file_path[file_path.rfind('/')+1:]), folder_file = filename, json_file = change_name + ".json")
+	content_object.save()
 
 	#files list 
 

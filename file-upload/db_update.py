@@ -28,7 +28,7 @@ def get_type(file):
 
 
 cwd = os.getcwd()
-files_directory = cwd + '/file-upload/media/'
+files_directory = '/var/www/ekstep/ecar_files/'
 EkFile.objects.all().delete()
 list_of_file_dictionaries = []
 local_files = []

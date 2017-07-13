@@ -87,5 +87,5 @@ STATICFILES_DIRS = [
     'file-upload/static',
 ]
 
-MEDIA_URL = '/var/www/ekstep/'
+MEDIA_URL = '/var/www/ekstep/ecar_files/'
 MEDIA_ROOT = MEDIA_URL

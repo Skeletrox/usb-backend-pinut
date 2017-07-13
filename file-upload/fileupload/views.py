@@ -8,16 +8,17 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.template import Context, loader
 from django.shortcuts import render,get_object_or_404
 from django.views.generic import CreateView, DeleteView, ListView
-from .models import EkFile
+from .models import EkFile, Content
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 from django.urls import reverse
 from .extract import extractit
+from .deleteExtract import deleteit
 
 #staticFileLoc = '/file-upload/media/'
-staticFileLocRoot = '/var/www/ekstep/'
+staticFileLocRoot = '/var/www/ekstep/ecar_files/'
 
 
 #files_existing=[]
@@ -122,8 +123,8 @@ class EkFileCreateView(CreateView):
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         print 'Before you send post request'
-        print self.object.link
-        extractit(self.object.link)
+        print self.object.path_of_file
+        extractit(self.object.path_of_file)
         return response
 
     def form_invalid(self, form):
@@ -141,6 +142,10 @@ class EkFileDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        print 'Attempting to delete ' + str(self.object)
+        content_object = Content.objects.get(ekfile = self.object)
+        deleteit({'folder_file':content_object.folder_file,'json_file':content_object.json_file})
+        content_object.delete()
         self.object.delete()
         response = JSONResponse(True, mimetype=response_mimetype(request))
         response['Content-Disposition'] = 'inline; filename=files.json'
@@ -175,14 +180,16 @@ def verify_USB(request):
 def download_to_USB(request):
     usb_name = get_usb_name()
     if usb_name is not None:
-        local_files_dir = getpass.getuser() + '/FILES/'
+        local_files_dir = '/' + getpass.getuser() + '/FILES/'
         if os.geteuid() != 0:
             local_files_dir = '/home/' + getpass.getuser() + '/FILES/'
+	print local_files_dir
         local_files = []
         for root, folders, files in os.walk(local_files_dir):
             for file in files:
                 if (not os.path.isdir(file)) and file.endswith(".json"):
                     local_files.append(os.path.join(root, file))
+	print local_files
         actual_index = local_files[0].split('/').index('FILES') + 1
         for file in local_files:
             os.chdir('/media/' + getpass.getuser() + '/' + usb_name)
@@ -275,7 +282,7 @@ def transfer(request):
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
                         removeCorruptFile(file_to_transfer)
-                    extractit(staticFileLocRoot + file_to_transfer)
+                    extractit(staticFileLocRoot + split_dirs(file_to_transfer))
                 except NoFilesError as error:
                     #Bug report: This thing is being thrown after downloading files? 
                     print 'Aiyappa file illa pa'
@@ -306,7 +313,7 @@ def transfer(request):
                 file_to_save = EkFile(id = count, file = value)
                 #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
                 file_to_save.save()
-                extractit(file_to_save.link)
+                #extractit(file_to_save.path_of_file)
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)

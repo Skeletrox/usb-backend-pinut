@@ -10,7 +10,7 @@ from shutil import copy2		 																#Copies files
 process = None
 #staticFileLoc = '/file-upload/media/'
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
-staticFileLocRoot = '/var/www/ekstep/'								#Gives the entire static file root thus is multiuser friendly
+staticFileLocRoot = '/var/www/ekstep/ecar_files/'								#Gives the entire static file root thus is multiuser friendly
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
 def get_usb_name():
@@ -43,7 +43,7 @@ def transfer_file(file):
 		#files = [file for file in os.listdir(".") if not os.path.isdir(file)]					#Copies only files as we use a flat filesystem.
 		#for file in files:
 	sendString = "cp " + file + " " + staticFileLocRoot + file
-	proc = subprocess.Popen (sendString, shell=True )									#Enhanced copy function
+	proc = subprocess.Popen (sendString, shell=True)									#Enhanced copy function
 	proc.communicate()[0]
 	return proc.returncode
 	print ('File transfer complete!')
