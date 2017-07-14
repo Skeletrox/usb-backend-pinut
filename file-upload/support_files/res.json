@@ -11,8 +11,11 @@
 		{
 			"name" : "usb_on_automount",
 			"value": "/media/"
+		},
+		{
+			"name" : "server_root",
+			"value": "/root/backend/usb-backend-pinut/file-upload/"
 		}
-
 	]
 
 }
