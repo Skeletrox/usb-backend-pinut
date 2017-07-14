@@ -282,7 +282,6 @@ def transfer(request):
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
                         removeCorruptFile(file_to_transfer)
-                    extractit(staticFileLocRoot + split_dirs(file_to_transfer))
                 except NoFilesError as error:
                     #Bug report: This thing is being thrown after downloading files? 
                     print 'Aiyappa file illa pa'
@@ -312,8 +311,9 @@ def transfer(request):
                 file_size = os.stat(file_to_transfer).st_size
                 file_to_save = EkFile(id = count, file = value)
                 #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
+                print '[Z]About to save ' + value
                 file_to_save.save()
-                #extractit(file_to_save.path_of_file)
+                extractit(file_to_save.path_of_file)
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
