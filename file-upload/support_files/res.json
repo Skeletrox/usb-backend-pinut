@@ -1,0 +1,18 @@
+{
+	"global_vars" : [
+		{	
+			"name" : "ekstep_root", 
+			"value": "/var/www/ekstep/ecar_files/"
+		},
+		{
+			"name" : "telemetry_local",
+			"value": "/FILES/"
+		},
+		{
+			"name" : "usb_on_automount",
+			"value": "/media/"
+		}
+
+	]
+
+}

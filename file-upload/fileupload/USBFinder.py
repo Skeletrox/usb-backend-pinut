@@ -10,7 +10,12 @@ from shutil import copy2		 																#Copies files
 process = None
 #staticFileLoc = '/file-upload/media/'
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
-staticFileLocRoot = '/var/www/ekstep/ecar_files/'								#Gives the entire static file root thus is multiuser friendly
+with open('support_files/res.json') as res_file:
+	try:
+		json_data = json.loads(res_file)
+		staticFileLocRoot = json_data["global_vars"][0].get("value", "")
+	except:
+		staticFileLocRoot = '/'
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
 def get_usb_name():

@@ -18,7 +18,7 @@ from .extract import extractit
 from .deleteExtract import deleteit
 
 #staticFileLoc = '/file-upload/media/'
-staticFileLocRoot = '/var/www/ekstep/ecar_files/'
+staticFileLocRoot = None
 
 
 #files_existing=[]
@@ -83,17 +83,15 @@ def delete_files(request):
 
 def verify(request, optional=False):
     flag='INIT'
-    global is_auth, user, password, optional_flag
+    global optional_flag
+    optional_flag = False
+    global is_auth, user, password
     if optional:
         optional_flag = True
         usb_checked = attemptMount()
         usb_flag = 'disabled'
         text = 'Please insert USB and refresh   '
         return HttpResponseRedirect('../new')
-        if usb_checked is not None:
-            usb_flag = 'active'
-            text = 'Click USB Download to download files'
-        return render(request, 'fileupload/ekfile_form.html', {'usb_checked': usb_flag, 'text':text})
     try:
         user=User.objects.get(username=request.POST['email'])
         logger = logging.getLogger(__name__)
@@ -106,6 +104,15 @@ def verify(request, optional=False):
         flag = 'FAKE'
     if(flag == 'REAL' and user.check_password(password)):
         is_auth = True
+        ############################################################
+        # Load values from res.json file                           #
+        ############################################################
+        with open('support_files/res.json') as res_file:
+            try:
+                json_data = json.loads(res_file)
+                staticFileLocRoot = json_data["global_vars"][0].get("value", "")
+            except:
+                return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
         return HttpResponseRedirect('new/')    
     else:
         return render(request,'fileupload/LOGIN.html',{'invalid':'not a valid username or password',})
