@@ -1,7 +1,7 @@
 {
 	"global_vars" : [
-		{	
-			"name" : "ekstep_root", 
+		{
+			"name" : "ekstep_root",
 			"value": "/var/www/ekstep/ecar_files/"
 		},
 		{
@@ -11,8 +11,11 @@
 		{
 			"name" : "usb_on_automount",
 			"value": "/media/"
+		},
+		{
+			"name" : "server_root",
+			"value" : "/root/backend/usb-backend-pinut/file-upload/"
 		}
-
 	]
 
 }

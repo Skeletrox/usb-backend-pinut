@@ -1,4 +1,4 @@
-import json, os, subprocess, getpass
+import json, os, subprocess, getpass, io
 import logging
 
 from .USBFinder import attemptMount,transfer_file, get_usb_name
@@ -19,6 +19,7 @@ from .deleteExtract import deleteit
 
 #staticFileLoc = '/file-upload/media/'
 staticFileLocRoot = None
+telemetryLocRoot = None
 
 
 #files_existing=[]
@@ -109,8 +110,9 @@ def verify(request, optional=False):
         ############################################################
         with open('support_files/res.json') as res_file:
             try:
-                json_data = json.loads(res_file)
+                json_data = json.load(res_file)
                 staticFileLocRoot = json_data["global_vars"][0].get("value", "")
+                telemetryLocRoot = json_data["global_vars"][1].get("value", "")
             except:
                 return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
         return HttpResponseRedirect('new/')    
@@ -187,17 +189,19 @@ def verify_USB(request):
 def download_to_USB(request):
     usb_name = get_usb_name()
     if usb_name is not None:
-        local_files_dir = '/' + getpass.getuser() + '/FILES/'
+        local_files_dir = '/' + getpass.getuser() + telemetryLocRoot
         if os.geteuid() != 0:
-            local_files_dir = '/home/' + getpass.getuser() + '/FILES/'
-	print local_files_dir
+            local_files_dir = '/home/' + getpass.getuser() + telemetryLocRoot
+	    print local_files_dir
         local_files = []
         for root, folders, files in os.walk(local_files_dir):
             for file in files:
                 if (not os.path.isdir(file)) and file.endswith(".json"):
                     local_files.append(os.path.join(root, file))
-	print local_files
-        actual_index = local_files[0].split('/').index('FILES') + 1
+	    print local_files
+        if len(local_files < 1):
+            return JsonResponse({'res':'No supported local files available'})
+        actual_index = local_files[0].split('/').index(split_dirs(telemetryLocRoot)) + 1
         for file in local_files:
             os.chdir('/media/' + getpass.getuser() + '/' + usb_name)
             split_list = file.split('/')
@@ -285,7 +289,7 @@ def transfer(request):
                     file_to_transfer = files[int(fileCount)]
                     print '[Z]Attempting to transfer ' + str(file_to_transfer)
 
-                    return_code = transfer_file(file_to_transfer)
+                    return_code = transfer_file(split_dirs(file_to_transfer))
                     if return_code != 0:
                         print 'USB unexpectedly removed!'
                         removeCorruptFile(file_to_transfer)

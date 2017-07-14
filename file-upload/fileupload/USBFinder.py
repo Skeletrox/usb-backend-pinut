@@ -1,4 +1,4 @@
-import os, inspect 																				#needed for os files
+import os, inspect, json 																				#needed for os files
 from glob import glob																			#Needed for directories
 import subprocess																				#Running lsusb
 import getpass																					#used for getuser()
@@ -12,10 +12,11 @@ process = None
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
 with open('support_files/res.json') as res_file:
 	try:
-		json_data = json.loads(res_file)
+		json_data = json.load(res_file)
 		staticFileLocRoot = json_data["global_vars"][0].get("value", "")
 	except:
 		staticFileLocRoot = '/'
+print 'usb says static files are at ' + staticFileLocRoot 
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
 def get_usb_name():
