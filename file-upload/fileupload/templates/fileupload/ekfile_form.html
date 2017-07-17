@@ -13,10 +13,10 @@
         <div class="row fileupload-buttonbar">
             <div class="col-lg-7">
                 <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
+                <span class="btn btn-success fileinput-button" id="dev_up" hidden="true">
                     <i class="glyphicon glyphicon-plus"></i>
                     <span>Add files...</span>
-                    <input type="file" name="file" multiple>
+                    <input type="file" name="file" multiple accept=".ecar">
                 </span>
                 <!--button type="submit" class="btn btn-primary start">
                     <i class="glyphicon glyphicon-upload"></i>
@@ -26,7 +26,7 @@
                     <i class="glyphicon glyphicon-ban-circle"></i>
                     <span>Cancel upload</span>
                 </button-->
-                <button type="button" class="btn btn-danger delete">
+                <button type="button" class="btn btn-danger delete" id="delete_all">
                     <i class="glyphicon glyphicon-trash"></i>
                     <span>Delete all</span>
                 </button>
@@ -110,6 +110,22 @@
 <script src="/static/js/csrf.js"></script>
 <script>
 $(function() {
+    $.getJSON('../return_permissions/', function(response) {
+        var obj = JSON.parse(JSON.stringify(response));
+        if (!(obj.down_to_usb)) {
+            document.getElementById("usb_down").style.display="None";
+        }
+        if (!(obj.up_from_usb)) {
+            document.getElementById("usb").style.display="None";
+        }
+        if (!(obj.up_from_dev)) {
+            document.getElementById("dev_up").style.display="None";
+        }
+        if (!(obj.delete_files)) {
+            document.getElementById("delete_all").style.display="None";
+            document.getElementById("up_table").style.display="None";
+        }
+    });
     $.getJSON('../verify_USB/', function (response) {
             var obj = JSON.parse(JSON.stringify(response));
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + obj.data);

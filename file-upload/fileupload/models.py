@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -39,4 +42,41 @@ class Content(models.Model):
 	def delete(self,*args,**kwargs):
 		super(Content,self).delete(*args,**kwargs)
 
+class Permission(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	down_to_usb = models.BooleanField(default=False)
+	up_from_usb = models.BooleanField(default=False)	
+	up_from_dev = models.BooleanField(default=False)
+	delete_files = models.BooleanField(default=False)
+	ssid_mod = models.BooleanField(default=False)
+	captive_mod = models.BooleanField(default=False)
+	global_vars_mod = models.BooleanField(default=False)
 
+	def __str__(self):
+		return 'Permissions for ' + str(self.user)
+
+	def get_permissions(self):
+		perms_dict = {'down_to_usb' : self.down_to_usb,
+					  'up_from_usb' : self.up_from_usb,
+					  'up_from_dev' : self.up_from_dev,
+					  'ssid_mod' : self.ssid_mod,
+					  'delete_files' : self.delete_files,
+					  'captive_mod' : self.captive_mod,
+					  'global_vars_mod' : self.global_vars_mod}
+		return perms_dict
+
+@receiver(post_save, sender=User)
+def create_permissions (sender, instance, created, **kwargs):
+	if created:
+		Permission.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_permissions (sender, instance, **kwargs):
+	if instance.is_superuser:
+		instance.permission.down_to_usb = True
+		instance.permission.up_from_usb = True
+		instance.permission.up_from_dev = True
+		instance.permission.ssid_mod = True
+		instance.permission.captive_mod = True
+		instance.permission.global_vars_mod = True
+		instance.permission.save()

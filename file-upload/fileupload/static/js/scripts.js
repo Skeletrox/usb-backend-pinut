@@ -35,4 +35,4 @@ document.getElementById('usb_down').addEventListener('click', function() {
             var obj = JSON.parse(JSON.stringify(response));
               document.getElementById("usb_text").innerHTML = obj.res;
         });
-})
+});

@@ -31,6 +31,26 @@ count = 0
 is_auth = False
 optional_flag = False
 percentage_done = 0
+perm_dict = None
+user = None
+
+def return_permissions(request):
+    perms = perm_dict.get_permissions()
+    '''
+    for key, value in perms.items():
+        if not perms[key]:
+            perms[key] = 'false'
+        else:
+            perms[key] = 'true'
+    '''
+    return JsonResponse(perms)
+
+class User_Permissions:
+    def __init__(self, user):
+        self.permissions = user.permission.get_permissions()
+
+    def get_permissions(self):
+        return self.permissions
 
 class NoFilesError(ValueError):
     def __init__ (self, arg = None):
@@ -85,12 +105,12 @@ def verify(request, optional=False):
     flag='INIT'
     global optional_flag
     optional_flag = False
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    parentdir = os.path.abspath(os.path.join(dname, os.pardir))
     global is_auth, user, password
     if optional:
         optional_flag = True
-        usb_checked = attemptMount()
-        usb_flag = 'disabled'
-        text = 'Please insert USB and refresh   '
         return HttpResponseRedirect('../new')
     try:
         user=User.objects.get(username=request.POST['email'])
@@ -103,11 +123,13 @@ def verify(request, optional=False):
     except User.DoesNotExist:
         flag = 'FAKE'
     if(flag == 'REAL' and user.check_password(password)):
+        global perm_dict
+        perm_dict = User_Permissions(user)
         is_auth = True
         ############################################################
         # Load values from res.json file                           #
         ############################################################
-        with open('support_files/res.json') as res_file:
+        with open(parentdir + '/support_files/res.json') as res_file:
             try:
                 json_data = json.load(res_file)
                 staticFileLocRoot = json_data["global_vars"][0].get("value", "")
@@ -236,7 +258,7 @@ def transfer(request):
             if request.method == 'GET':
                 new_files = attemptMount()
                 if new_files is None:
-                    return render(request, 'fileupload/ekfile_form.html', {'usb_checked': 'disabled', 'text' : 'You have removed USB, please reinsert and login again'})
+                    return HttpResponseRedirect('../new')
                 old_files = [fModel.file for fModel in EkFile.objects.all()]
                 files = [thing for thing in new_files if split_dirs(thing) not in old_files]
                 #old_files.extend(files)
@@ -346,7 +368,6 @@ def transfer(request):
             if total_done == total_amount and len(files_existing) > 0:
                 print 'Yella mugithu'
                 #old_files = files
-                global optional_flag
                 optional_flag = True
                 download_more = None
                 return HttpResponseRedirect('../new')
@@ -362,17 +383,3 @@ def removeCorruptFile(file):
     sendString = "rm " + staticFileLocRoot + file
     t = subprocess.Popen(sendString)
     t.communicate()[0]
-
-def delete_all(request):
-    if request.method=='POST':
-        ek_files = EkFile.objects.all()
-        for ek_file in ek_files:
-            ek_file.delete()
-        template = loader.get_template('checkUpdates/ekfile_form.html')
-        total_files_in_db = EkFile.objects.all()
-        context = {
-           # 'list_of_files' : total_files_in_db,
-            'usb_mounted': usb_mounted,
-            'usb_mounted_text' : usb_mounted_text,
-        }
-        return HttpResponse(template.render(context, request))
