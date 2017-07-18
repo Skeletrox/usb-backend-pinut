@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<title>Change Permissions</title>
+		<meta name="viewport">
+		<style>
+			@media (min-width: 1920px) {
+				.container {
+					width: 1500px;
+				}
+			}
+			.table td {
+				text-align: center;
+			}
+			.table th {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 align="CENTER">Permission Change Portal</h1>
+		<div class="container">
+			<div class="table-responsive">
+				<form action="update_data/" method="POST" name="permissions" id="permissions">
+				{% csrf_token %}
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>User</th>
+								{% for permission in permission_list %}
+									<th>{{ permission }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for user, values in permission_dict.items %}
+							<tr align="CENTER">
+								<td>{{ user }}</td>
+								{% for perm, val in values.items %}
+									<td align="center"> 
+										{% if val %}
+											<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{ user }}-{{ perm }}">
+											<input type="checkbox" class="mdl-checkbox__input" id="checkbox-{{ user }}-{{ perm }}" name="{{ user }}_{{ perm }}" checked>
+											</label>
+										{% else %}
+											<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{ user }}-{{ perm }}">
+											<input type="checkbox" class="mdl-checkbox__input" id="checkbox-{{ user }}-{{ perm }}" name="{{ user }}_{{ perm }}">
+										</label>
+										{% endif %}
+									</td>
+								{% endfor %}
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div align="CENTER">
+				<btn class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="sendData()">Update Permissions <i class = "glyphicon glyphicon-ok"></i></btn>
+			</div>
+		</div>
+	</body>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+	<!-- Bootstrap styles -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+	function sendData() {
+		alert('Hi');
+		document.getElementById("permissions").submit();
+	}
+	</script>
+</html> 
