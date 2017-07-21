@@ -1,27 +1,33 @@
-{% extends "upload_base.html" %}
+{% extends "backadmin_base.html" %}
 
 {% block content %}	
-	<!--nav>
-		<div class="nav-wrapper grey">
-			<span class="brand-logo center">SSID Information Change Page</span>
-		</div>
-	</nav-->
 	<div class="container">
-		<form class = "col s12" id = "ssid_form" action = "../modify_ssid/" method = "POST">
+		<form id = "ssid_form" action = "../modify_ssid/" method = "POST">
 		{% csrf_token %}
-		<div class = "card grey lighten-4 z-depth-3">
-			<div class="card-content">
-				<div class = "row">
-					<div class = "input-field col s12">
-						<p>Enter new SSID:</p>
-						<input placeholder = "Currently: {{ ssid_name }}" name="ssid_name" id = "ssid" type = "text" opacity = "1">
-					</div>
-				</div>
+		<!--div class = "demo-card-wide mdl-card mdl-shadow--2dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Enter new SSID:</h2>
 			</div>
-			<div class="card-action">
-				<a href="#"><span onclick="submit_values()" class = "grey-text text-darken-3">Change SSID Information</span></a>
+			<div class = "mdl_card__supporting_text">
+					<input class="mdl-textfield__input" placeholder = "Currently: {{ ssid_name }}" name="ssid_name" id = "ssid" type = "text">
 			</div>
-		</div>
+			<div class="mdl-card__actions mdl-card--border">
+				<a class = "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"><span onclick="submit_values()">Change SSID Information</span></a>
+			</div>
+		</div -->
+		<div class = "demo-card-wide mdl-card mdl-shadow--2dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Enter new SSID</h2>
+			</div>
+			<div class="mdl-card__supporting-text">
+				<font size="3em">
+					<input class="mdl-textfield__input" type="text" id="ssid" name="ssid_name" placeholder = "Currently: {{ ssid_name }}">
+				</font>
+			</div>
+			<div class="mdl-card--border mdl-card__actions">
+				<a class = "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"><span onclick = "submit_values()">Change SSID</span></a>
+			</div>
+		</div> 
 		</form>
 		{% if result_text %}
 		<div class="row" align="CENTER">
@@ -31,16 +37,22 @@
 		</div>
 		{% endif %}
 	</div>
-	<!-- Compiled and minified CSS for Material Design -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
-    <!-- Compiled and minified JavaScript for Material Design -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
-    <!-- Icons for Material Design -->
-     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script>
-			function submit_values() {
-					document.getElementById('ssid_form').submit();
-			}
+		function submit_values() {
+			document.getElementById('ssid_form').submit();
+		}
 	</script>
+	<style>
+		.demo-card-wide.mdl-card {
+			width: 100%;
+		}
+		.demo-card-wide > .mdl-card__title {
+			color : #383839;
+		}
+	</style>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 {% endblock %}

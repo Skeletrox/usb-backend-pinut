@@ -1,4 +1,4 @@
-{% extends "upload_base.html" %}
+{% extends "backadmin_base.html" %}
 {% load upload_tags %}
 
 {% block content %}
@@ -110,27 +110,7 @@
 <script src="/static/js/csrf.js"></script>
 <script>
 $(function() {
-    $.getJSON('../return_permissions/', function(response) {
-        var obj = JSON.parse(JSON.stringify(response));
-        if (!(obj.down_to_usb)) {
-            document.getElementById("usb_down").style.display="None";
-        }
-        if (!(obj.up_from_usb)) {
-            document.getElementById("usb").style.display="None";
-        }
-        if (!(obj.up_from_dev)) {
-            document.getElementById("dev_up").style.display="None";
-        }
-        if (!(obj.delete_files)) {
-            document.getElementById("delete_all").style.display="None";
-            if (document.getElementById("up_table") != null) {
-                document.getElementById("up_table").style.display="None";
-            }
-        }
-        if (!(obj.ssid_mod)) {
-            document.getElementById("ssid_mod").style.display="None";
-        }
-    });
+    
     $.getJSON('../verify_USB/', function (response) {
             var obj = JSON.parse(JSON.stringify(response));
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + obj.data);

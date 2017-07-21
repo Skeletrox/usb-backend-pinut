@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <!-- Force latest IE rendering engine or ChromeFrame if installed -->
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <![endif]-->
+    <meta charset="utf-8">
+    <title>Administration</title>
+    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <nav class = "navbar navbar-inverse">
+        <div class = "container-fluid">
+            <div class = "navbar-header">
+                <span class = "navbar-brand"><b>Administration</b></span>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="#">Device Management</a></li>
+                <li id="ssid_mod"><a href="../../ssidmod">SSID Modification</a></li>
+                <li id="captive_mod"><a href="../../changecaptive">Captive Portal Modification</a></li>
+                <li id="permissions_mod"><a href="../../changepermissions">Change Permissions for Users</a></li>
+                <li id="change_vars"><a href="#">Change Global Variables</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="../user_logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+{% block content %}
+    <h1>No content set</h1>
+{% endblock %}
+</body> 
+<script src="jquery-3.2.1.min.js"></script>
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bars, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads and client-side image resizing. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- Generic page styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- blueimp Gallery styles -->
+    <link rel="stylesheet" href="/static/css/blueimp-gallery.min.css">
+    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+    <link rel="stylesheet" href="/static/css/jquery.fileupload-ui.css">
+    <!-- CSS adjustments for browsers with JavaScript disabled -->
+    <script>
+    $(function() {	
+    	$.getJSON('return_permissions/', function(response) {
+        	var obj = JSON.parse(JSON.stringify(response));
+        	if (!(obj.down_to_usb)) {
+        		var x = document.getElementById("usb_down");
+        		if (x != null) {
+            		x.style.display="None";
+            	}
+        	}
+        	if (!(obj.up_from_usb)) {
+        		var x = document.getElementById("usb");
+        		if (x != null) {
+            		x.style.display="None";
+            	}
+        	}
+        	if (!(obj.up_from_dev)) {
+        		var x = document.getElementById("dev_up");
+        		if (x != null) {
+            		x.style.display="None";
+            	}
+        	}
+        	if (!(obj.delete_files)) {
+        		var x = document.getElementById("delete_all");
+        		if (x != null) {
+            		x.style.display="None";
+            	}
+            	x = document.getElementById("up_table");
+            	if (x != null){
+                	x.style.display="None";
+                }
+            }
+        	if (!(obj.ssid_mod)) {
+            	document.getElementById("ssid_mod").style.display="None";
+        	}
+        	if (!(obj.captive_mod)) {
+        		document.getElementById("captive_mod").style.display="None";
+        	}
+        	if (!(obj.global_vars_mod)) {
+        		document.getElementById("change_vars").style.display="None";
+        	}
+        	if (!(obj.change_permissions)) {
+        		document.getElementById("permissions_mod").style.display="None";
+        	}
+        });
+    });
+    </script>
+    <noscript><link rel="stylesheet" href="/static/css/jquery.fileupload-ui-noscript.css"></noscript>
+</html>

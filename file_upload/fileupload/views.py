@@ -36,6 +36,7 @@ user = None
 
 def return_permissions(request):
     perms = perm_dict.get_permissions()
+    perms['change_permissions'] = user.is_superuser;
     return JsonResponse(perms)
 
 class User_Permissions:

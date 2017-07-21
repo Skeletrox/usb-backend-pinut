@@ -16,6 +16,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'changevars.apps.ChangevarsConfig',
     'changepermissions.apps.ChangepermissionsConfig',
     'changecaptive.apps.ChangecaptiveConfig',
     'ssidmod.apps.SsidmodConfig',
