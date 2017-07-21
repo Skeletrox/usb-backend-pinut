@@ -1,14 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <!-- Force latest IE rendering engine or ChromeFrame if installed -->
-    <!--[if IE]>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <![endif]-->
     <meta charset="utf-8">
     <title>Administration</title>
-    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>
     <nav class = "navbar navbar-inverse">
@@ -17,14 +11,17 @@
                 <span class = "navbar-brand"><b>Administration</b></span>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="#">Device Management</a></li>
-                <li id="ssid_mod"><a href="../../ssidmod">SSID Modification</a></li>
-                <li id="captive_mod"><a href="../../changecaptive">Captive Portal Modification</a></li>
-                <li id="permissions_mod"><a href="../../changepermissions">Change Permissions for Users</a></li>
+                <li><a href="{% url 'fileupload:upload-new' %}">Device Management</a></li>
+                <li id="ssid_mod"><a href="{% url 'ssidmod:index' %}">SSID Modification</a></li>
+                <li id="captive_mod"><a href="{% url 'changecaptive:index' %}">Captive Portal Modification</a></li>
+                <li id="permissions_mod"><a href="{% url 'changepermissions:display' %}">Change Permissions for Users</a></li>
                 <li id="change_vars"><a href="#">Change Global Variables</a></li>
+                <li id="user_create"><a href="{% url 'createuser:index' %}">Create User</a></li>
+                <li id="user_delete"><a href="{% url 'createuser:delete_user' %}">Delete User</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="../user_logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                <li><a href = "#"><span id="username"></span></a></li>
+                <li><a href="{% url 'backadmin:user_logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </nav>
@@ -32,8 +29,7 @@
 {% block content %}
     <h1>No content set</h1>
 {% endblock %}
-</body> 
-<script src="jquery-3.2.1.min.js"></script>
+</body>
      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bars, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads and client-side image resizing. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
     <!-- JQuery -->
@@ -50,8 +46,9 @@
     <!-- CSS adjustments for browsers with JavaScript disabled -->
     <script>
     $(function() {	
-    	$.getJSON('return_permissions/', function(response) {
+    	$.getJSON("{% url 'backadmin:return_permissions' %}", function(response) {
         	var obj = JSON.parse(JSON.stringify(response));
+            document.getElementById("username").innerHTML = obj.user_name;
         	if (!(obj.down_to_usb)) {
         		var x = document.getElementById("usb_down");
         		if (x != null) {
@@ -86,11 +83,11 @@
         	if (!(obj.captive_mod)) {
         		document.getElementById("captive_mod").style.display="None";
         	}
-        	if (!(obj.global_vars_mod)) {
+        	if (!(obj.superuser_tasks)) {
         		document.getElementById("change_vars").style.display="None";
-        	}
-        	if (!(obj.change_permissions)) {
         		document.getElementById("permissions_mod").style.display="None";
+                document.getElementById("user_create").style.display="None";
+                document.getElementById("user_delete").style.display="None";
         	}
         });
     });

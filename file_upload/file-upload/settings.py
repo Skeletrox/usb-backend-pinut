@@ -16,6 +16,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'createuser.apps.CreateuserConfig',
+    'backadmin.apps.BackadminConfig',
     'changevars.apps.ChangevarsConfig',
     'changepermissions.apps.ChangepermissionsConfig',
     'changecaptive.apps.ChangecaptiveConfig',

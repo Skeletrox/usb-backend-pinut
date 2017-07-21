@@ -7,7 +7,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', lambda x: HttpResponseRedirect('/backadmin/')),
+    url(r'^$', lambda x: HttpResponseRedirect('backadmin/')),
     url(r'^upload/', include('fileupload.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ssidmod/', include('ssidmod.urls')),
@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^changepermissions/', include('changepermissions.urls')),
     url(r'^changevariables/', include('changevars.urls')),
     url(r'^backadmin/', include('backadmin.urls')),
+    url(r'^createuser/', include('createuser.urls')),
 ]
 
 if settings.DEBUG:

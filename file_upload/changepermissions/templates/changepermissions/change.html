@@ -1,22 +1,6 @@
-<html>
-	<head>
-		<title>Change Permissions</title>
-		<meta name="viewport">
-		<style>
-			@media (min-width: 1920px) {
-				.container {
-					width: 1500px;
-				}
-			}
-			.table td {
-				text-align: center;
-			}
-			.table th {
-				text-align: center;
-			}
-		</style>
-	</head>
-	<body>
+{% extends "backadmin_base.html" %}
+
+{% block content %}
 		<h1 align="CENTER">Permission Change Portal</h1>
 		<div class="container">
 			<div class="table-responsive">
@@ -58,7 +42,6 @@
 				<btn class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="sendData()">Update Permissions <i class = "glyphicon glyphicon-ok"></i></btn>
 			</div>
 		</div>
-	</body>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
@@ -69,8 +52,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script>
 	function sendData() {
-		alert('Hi');
 		document.getElementById("permissions").submit();
 	}
 	</script>
-</html> 
+{% endblock %}

@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = "changecaptive"
 urlpatterns = [
 	url (r'^$', views.index, name='index'),
 	url (r'^change_data/$', views.change_data, name='changedata'),
