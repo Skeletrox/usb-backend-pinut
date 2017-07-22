@@ -1,11 +1,46 @@
-<html>
-<head>
-<title>Saludos</title>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends "backadmin_base.html" %}
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+{% block content %}
+<div class="container">	
+	<h1 align='CENTER'>Customize Captive Portal</h1>
+	<input type="file" accept=".png" class="filestuff" id="name" form="formdata">
+	<input type="file" accept=".apk" class="filestuff" id="name_apk" form="formdata">
+	<button class = "btn btn-success" id="files_add" onclick="openFiles()">
+       	<i class="glyphicon glyphicon-plus"></i>
+       	<span>Add logo</span>
+	</button>
+	<div id="pic_thumbnail" href=""></div><p id="logo_name">No file chosen</p>
+	<br /><hr/>
+		<form id='formdata' method='POST' action='change_data/' enctype='multipart/form-data'>
+	{% csrf_token %}
+    	<label for="title">Set heading</label>
+    	<input type="text" class="form-control" id="title" name="title"><br />
+    	<label for="desc">Set text description</label>
+    	<textarea class="form-control" rows="10" id="description" name="description"></textarea>
+    </form>
+    <hr/>
+    <button class = "btn btn-success" id="files_add" onclick="openFilesForApk()">
+       	<i class="glyphicon glyphicon-plus"></i>
+       	<span>Select APK for user to download</span>
+	</button>
+	<p id="logo_name_apk">No file chosen</p>
+	<hr/>
+	<div align="CENTER">
+		<button class = "btn btn-info" id="upload_creds" onclick="sendstuff()">
+		<i class="glyphicon glyphicon-ok"></i>
+		<span>Update Captive Portal!</span>
+		</button>
+	</div>
+	{% if status_text %}
+		<p align='CENTER'>Successful updation of captive portal! <a href='captive_display/' target='_blank'>Click here</a> to see it.</p>
+	{% endif %}
+	{% if fail_text %}
+		<p align='CENTER'>{{ fail_text }}</p>
+	{% endif %}
+</div>
+<!-- The file upload script -->
+
 <style>
 	.filestuff {
 		opacity: 0;
@@ -40,51 +75,6 @@
 
 
 </script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-</head>
-<body>
-	<h1 align='CENTER'>Customize Captive Portal</h1>
-		<input type="file" accept=".png" class="filestuff" id="name" form="formdata">
-		<input type="file" accept=".apk" class="filestuff" id="name_apk" form="formdata">
-	<div class="container">
-		<button class = "btn btn-success" id="files_add" onclick="openFiles()">
-        	<i class="glyphicon glyphicon-plus"></i>
-        	<span>Add logo</span>
-		</button><div id="pic_thumbnail" href=""></div><p id="logo_name">No file chosen</p>
-		<br /><hr/>
-		<form id='formdata' method='POST' action='change_data/' enctype='multipart/form-data'>
-		{% csrf_token %}
-    		<label for="title">Set heading</label>
-    		<input type="text" class="form-control" id="title" name="title"><br />
-    		<label for="desc">Set text description</label>
-    		<textarea class="form-control" rows="10" id="description" name="description"></textarea>
-    	</form>
-    	<hr/>
-    	<button class = "btn btn-success" id="files_add" onclick="openFilesForApk()">
-        	<i class="glyphicon glyphicon-plus"></i>
-        	<span>Select APK for user to download</span>
-		</button><p id="logo_name_apk">No file chosen</p>
-		<hr/>
-		<div align="CENTER">
-			<button class = "btn btn-info" id="upload_creds" onclick="sendstuff()">
-			<i class="glyphicon glyphicon-ok"></i>
-			<span>Update Captive Portal!</span>
-			</button>
-		</div>
-		{% if status_text %}
-		<p align='CENTER'>Successful updation of captive portal! <a href='captive_display/' target='_blank'>Click here</a> to see it.</p>
-		{% endif %}
-		{% if fail_text %}
-			<p align='CENTER'>{{ fail_text }}</p>
-		{% endif %}
-    </div>
-</body>
-<!-- The file upload script -->
 <script>
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -156,4 +146,5 @@ $('form').submit(function(e){
     });
 });
 </script>
-</html>
+
+{% endblock %}

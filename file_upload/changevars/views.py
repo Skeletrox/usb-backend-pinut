@@ -19,7 +19,11 @@ def load_vars():
 		message = "No global vars in JSON File!"
 	else:
 		message = "Loaded variables!"
-	return {'var_dict' : varlist, 'message' : message}
+	print varlist
+	var_dict = {}
+	for dictionary in varlist:
+		var_dict[dictionary['name']] = dictionary['value']
+	return {'var_dict' : var_dict, 'message' : message}
 
 def load_page(request):
 	context = load_vars()
@@ -30,6 +34,8 @@ def update_data(request):
 		for key, value in varlist.items():
 			new_val = request.POST.get("textinput-" + str(key), None)
 			if new_val is not None:
-				varlist[key] = new_val
+				for dictionary in varlist:
+					if dictionary['name'] == key:
+						dictionary['value'] = new_val
 		update_vars(varlist)
 	return HttpResponseRedirect("../")

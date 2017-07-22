@@ -15,7 +15,7 @@
                 <li id="ssid_mod"><a href="{% url 'ssidmod:index' %}">SSID Modification</a></li>
                 <li id="captive_mod"><a href="{% url 'changecaptive:index' %}">Captive Portal Modification</a></li>
                 <li id="permissions_mod"><a href="{% url 'changepermissions:display' %}">Change Permissions for Users</a></li>
-                <li id="change_vars"><a href="#">Change Global Variables</a></li>
+                <li id="change_vars"><a href="{% url 'changevars:loadpage' %}">Change Global Variables</a></li>
                 <li id="user_create"><a href="{% url 'createuser:index' %}">Create User</a></li>
                 <li id="user_delete"><a href="{% url 'createuser:delete_user' %}">Delete User</a></li>
             </ul>
