@@ -48,6 +48,9 @@
     $(function() {	
     	$.getJSON("{% url 'backadmin:return_permissions' %}", function(response) {
         	var obj = JSON.parse(JSON.stringify(response));
+            if (obj.user_name == '_null_') {
+                window.location.href = "/backadmin/";
+            }
             document.getElementById("username").innerHTML = obj.user_name;
         	if (!(obj.down_to_usb)) {
         		var x = document.getElementById("usb_down");

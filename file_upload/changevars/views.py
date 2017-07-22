@@ -30,12 +30,15 @@ def load_page(request):
 	return render(request, 'changevars/varchange.html', context)
 
 def update_data(request):
-	if request == 'POST':
-		for key, value in varlist.items():
-			new_val = request.POST.get("textinput-" + str(key), None)
-			if new_val is not None:
-				for dictionary in varlist:
-					if dictionary['name'] == key:
-						dictionary['value'] = new_val
-		update_vars(varlist)
-	return HttpResponseRedirect("../")
+    if request.method == 'POST':
+        print 'GOT POST'
+        global varlist
+        for dictionary in varlist:
+            print "textinput-%s" %(dictionary['name'])
+            new_val = request.POST.get("textinput-" + dictionary['name'], None)
+            print 'Should be %s' %(new_val)
+            if len(new_val) > 0:
+                dictionary['value'] = new_val
+        print varlist
+        update_vars(varlist)
+    return HttpResponseRedirect("../")

@@ -46,7 +46,14 @@ def verify(request):
 	return HttpResponseRedirect('../')
 
 def return_permissions(request):
-    perms = perm_dict.get_permissions()
+    print 'User is ' + str(user)
+    if user is None:
+        print 'User illa'
+        return JsonResponse({'user_name':'_null_'})
+    try:
+        perms = perm_dict.get_permissions()
+    except:
+        pass
     perms['superuser_tasks'] = user.is_superuser
     perms['user_name'] = user.username
     return JsonResponse(perms)
