@@ -56,7 +56,7 @@ def iter_through(obj, prompt):
 ####################################################################
 
 def iter_vars():
-	with open('support_files/res.json') as res:
+	with open('/support_files/res.json') as res:
 		try:
 			json_data = json.load(res)
 		except:
@@ -65,7 +65,7 @@ def iter_vars():
 	return list_of_vars
 
 def update_vars(new_var_list):
-	with open('support_files/res.json', 'w') as res:
+	with open('/support_files/res.json', 'w') as res:
 		try:
 			new_dict = {"global_vars" : new_var_list}
 			res.write(json.dumps(new_dict, sort_keys=True, indent=4))
@@ -77,7 +77,7 @@ def main():
     decorate()
     print 'res.json changer'
     decorate()
-    with open('support_files/res.json') as res:
+    with open('/support_files/res.json') as res:
         try:
             json_data = json.load(res)
         except:
@@ -91,7 +91,7 @@ def main():
     decorate_light()
     answer = raw_input('Update res.json? [Y/n]: ')
     if answer.lower() == 'y':
-        with open('support_files/res.json', 'w') as res:
+        with open('/support_files/res.json', 'w') as res:
             res.write(json.dumps(json_data, sort_keys=True, indent=4))
         print 'res.json updated!'
         return

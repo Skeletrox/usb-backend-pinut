@@ -10,7 +10,7 @@ from shutil import copy2		 																#Copies files
 process = None
 #staticFileLoc = '/file-upload/media/'
 #staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
-with open('support_files/res.json') as res_file:
+with open('/support_files/res.json') as res_file:
 	try:
 		json_data = json.load(res_file)
 		staticFileLocRoot = json_data["global_vars"][0].get("value", "")

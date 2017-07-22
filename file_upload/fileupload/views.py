@@ -100,9 +100,6 @@ def verify(request, optional=False):
     flag='INIT'
     global optional_flag
     optional_flag = False
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    parentdir = os.path.abspath(os.path.join(dname, os.pardir))
     global is_auth, user, password
     if optional:
         optional_flag = True
@@ -124,7 +121,7 @@ def verify(request, optional=False):
         ############################################################
         # Load values from res.json file                           #
         ############################################################
-        with open(parentdir + '/support_files/res.json') as res_file:
+        with open('/support_files/res.json') as res_file:
             try:
                 json_data = json.load(res_file)
                 staticFileLocRoot = json_data["global_vars"][0].get("value", "")
