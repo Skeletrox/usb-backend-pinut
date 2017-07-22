@@ -22,13 +22,9 @@ def update_data(request):
             for p in permission_strings:
                 result = request.POST.get(str(user) + '_' + str(p), "off")
                 print str(user) + '_' + p + ':' + result
-                #setattr(user.permission, p, result == "on")
-                '''newser = User.objects.get(username=str(user))
-                setattr(newser.permission, p, result == "on")
-                newser.save(force_update=True)'''
                 obj = Permission.objects.get(user = user)
                 setattr(obj, p, result == "on")
-                obj.save()
+                obj.save()                              #Saving the permission object is much easier than saving the user object
                 #print (getattr(newser.permission, p))
     return HttpResponseRedirect('../')
 

@@ -40,7 +40,7 @@ def verify(request):
 	if ((flag == 'REAL') and user.check_password(password)):
 		perm_dict = UserPermissions(user)
 		is_auth = True
-		return render(request, 'backadmin/admin_home.html', {'user' : user})
+		return HttpResponseRedirect('/upload/new/')
 	global fail
 	fail = True	
 	return HttpResponseRedirect('../')
