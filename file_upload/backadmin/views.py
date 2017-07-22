@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.http import JsonResponse, HttpResponseRedirect
+import subprocess
 
 # Create your views here.
 user = None
@@ -46,9 +47,7 @@ def verify(request):
 	return HttpResponseRedirect('../')
 
 def return_permissions(request):
-    print 'User is ' + str(user)
     if user is None:
-        print 'User illa'
         return JsonResponse({'user_name':'_null_'})
     try:
         perms = perm_dict.get_permissions()
@@ -61,3 +60,9 @@ def return_permissions(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('../')
+
+def change_ap(request):
+	command = "sh /x.sh"
+	proc = subprocess.Popen(command, shell = True)
+	proc.communicate()[0]
+	return JsonResponse ({'msg' : 'Access point mode has changed successfully! Wait until server restarts!'})
