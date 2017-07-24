@@ -2,6 +2,7 @@
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import subprocess
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -11,7 +12,8 @@ SECRET_KEY = '9%$in^gpdaig@v3or_to&_z(=n)3)$f1mr3hf9e#kespy2ajlo'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [subprocess.check_output(" x=\"$(ifconfig wlan0 | grep \"inet \" | awk -F'[: ]+' '{ print $4 }')\";echo $x", stderr = subprocess.STDOUT, shell=True)[:-2]]
+print 'ALLOWED HOSTS IS %s' %(ALLOWED_HOSTS)
 
 # Application definition
 
