@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Administration</title>
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
     <nav class = "navbar navbar-inverse">
@@ -18,6 +20,7 @@
                 <li id="change_vars"><a href="{% url 'changevars:loadpage' %}">Change Global Variables</a></li>
                 <li id="user_create"><a href="{% url 'createuser:index' %}">Create User</a></li>
                 <li id="user_delete"><a href="{% url 'createuser:delete_user' %}">Delete User</a></li>
+                <li id="change_ap_mode"><a href = '#' onclick="change_ap()">Change AP Mode</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href = "#"><span id="username"></span></a></li>
@@ -32,8 +35,6 @@
 </body>
      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bars, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads and client-side image resizing. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
-    <!-- JQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap styles -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
@@ -94,6 +95,16 @@
         	}
         });
     });
+
+    function change_ap() {
+        var x = confirm("Changing AP mode will cause the server to restart! Are you sure?");
+        if (x) {
+            $.getJSON("{% url 'backadmin:change_ap' %}", function(response) {
+                var message = JSON.parse(JSON.stringify(response));
+                alert(message.msg);
+            });
+        }
+    }
     </script>
     <noscript><link rel="stylesheet" href="/static/css/jquery.fileupload-ui-noscript.css"></noscript>
 </html>

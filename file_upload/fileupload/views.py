@@ -145,6 +145,7 @@ class EkFileCreateView(CreateView):
         response['Content-Disposition'] = 'inline; filename=files.json'
         print 'Before you send post request'
         print self.object.path_of_file
+        print '-'*10 + 'WE GON EXTRACT IT YO' + '-'*10
         extractit(self.object.path_of_file)
         return response
 
