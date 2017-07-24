@@ -68,15 +68,31 @@ def enableAutoMount():
 		f.write(line+'\n')
 	subprocess.Popen("udevadm control --reload-rules", shell=True)
 '''
-def attemptMount():			
+def attemptMount():		
+	lsblk_out = subprocess.check_output("lsblk", shell=True)
+	lsblk_list = lsblk_out.split('\n')
+	media_dir = None
+	for line in lsblk_list:
+		if '/media/' in line:
+			media_loc = line.index('/media/')
+			media_dir = line[media_loc:].strip()
+	print media_dir
+	if media_dir is None:
+		return None
+	os.chdir(media_dir)
+	'''
 	global count																#Runs when USB is mounted
-	os.chdir('/media/' + getpass.getuser())														#Returns the storage location [Should be same across all Linux devices]
+	os.chdir('/media/')														#Returns the storage location [Should be same across all Linux devices]
 	blkid_output = subprocess.check_output("blkid", shell=True)
 	blkid_usb_line_list = blkid_output.split("\n")
-	blkid_usb_line = blkid_usb_line_list[len(blkid_usb_line_list) - 2]
-	print (blkid_usb_line)
-	is_usb = check_if_line_usb(blkid_usb_line)
-	if not is_usb:
+	result = False
+	blkid_usb_line = None
+	for line in blkid_usb_line_list:
+		if check_if_line_usb(line):
+			result = True
+			blkid_usb_line = line
+			break
+	if not result:
 		return None
 	label_loc = blkid_usb_line.index("LABEL")
 	for i in range(label_loc, len(blkid_usb_line)):
@@ -90,6 +106,7 @@ def attemptMount():
 	currentFolder = folders[0]
 	filedict=[]																					#A dictionary of all files
 	os.chdir(currentFolder)
+	'''
 	temps = [name for name in os.listdir(".")]
 	print 'Temporary files are ' + str(temps)
 	files = []

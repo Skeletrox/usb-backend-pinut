@@ -61,7 +61,7 @@ def iter_vars():
 			json_data = json.load(res)
 		except:
 			return None
-	list_of_vars = json_data.get("global_vars", [])
+	list_of_vars = json_data.get("global_vars", {})
 	return list_of_vars
 
 def update_vars(new_var_list):
