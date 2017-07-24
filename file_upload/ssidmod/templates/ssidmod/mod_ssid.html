@@ -4,30 +4,11 @@
 	<div class="container">
 		<form id = "ssid_form" action = "../modify_ssid/" method = "POST">
 		{% csrf_token %}
-		<!--div class = "demo-card-wide mdl-card mdl-shadow--2dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Enter new SSID:</h2>
-			</div>
-			<div class = "mdl_card__supporting_text">
-					<input class="mdl-textfield__input" placeholder = "Currently: {{ ssid_name }}" name="ssid_name" id = "ssid" type = "text">
-			</div>
-			<div class="mdl-card__actions mdl-card--border">
-				<a class = "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"><span onclick="submit_values()">Change SSID Information</span></a>
-			</div>
-		</div -->
-		<div class = "demo-card-wide mdl-card mdl-shadow--2dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Enter new SSID</h2>
-			</div>
-			<div class="mdl-card__supporting-text">
-				<font size="3em">
-					<input class="mdl-textfield__input" type="text" id="ssid" name="ssid_name" placeholder = "Currently: {{ ssid_name }}">
-				</font>
-			</div>
-			<div class="mdl-card--border mdl-card__actions">
-				<a class = "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"><span onclick = "submit_values()">Change SSID</span></a>
-			</div>
-		</div> 
+			<h2>Enter new SSID</h2>
+			<font size="3em">
+				<input class="form-control" type="text" id="ssid" name="ssid_name" placeholder = "Currently: {{ ssid_name }}"><hr />
+			</font>
+			<button class = "btn btn-primary" onclick = "submit_values()">Change SSID</button> 
 		</form>
 		{% if result_text %}
 		<div class="row" align="CENTER">
