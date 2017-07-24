@@ -20,10 +20,7 @@ def load_vars():
 	else:
 		message = "Loaded variables!"
 	print varlist
-	var_dict = {}
-	for dictionary in varlist:
-		var_dict[dictionary['name']] = dictionary['value']
-	return {'var_dict' : var_dict, 'message' : message}
+	return {'var_dict' : varlist, 'message' : message}
 
 def load_page(request):
 	context = load_vars()
@@ -33,12 +30,12 @@ def update_data(request):
     if request.method == 'POST':
         print 'GOT POST'
         global varlist
-        for dictionary in varlist:
-            print "textinput-%s" %(dictionary['name'])
-            new_val = request.POST.get("textinput-" + dictionary['name'], None)
+        for key, value in varlist:
+            print "textinput-%s" %(key)
+            new_val = request.POST.get("textinput-" + key, None)
             print 'Should be %s' %(new_val)
             if len(new_val) > 0:
-                dictionary['value'] = new_val
+                varlist[key] = new_val
         print varlist
         update_vars(varlist)
     return HttpResponseRedirect("../")

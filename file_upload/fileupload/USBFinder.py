@@ -13,7 +13,7 @@ process = None
 with open('/support_files/res.json') as res_file:
 	try:
 		json_data = json.load(res_file)
-		staticFileLocRoot = json_data["global_vars"][0].get("value", "")
+		staticFileLocRoot = json_data["global_vars"].get("ekstep_root", "")
 	except:
 		staticFileLocRoot = '/'
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?

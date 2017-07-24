@@ -1,20 +1,10 @@
 {
-    "global_vars": [
-        {
-            "name": "ekstep_root", 
-            "value": "/var/www/ekstep/"
-        }, 
-        {
-            "name": "telemetry", 
-            "value": "/FILES/"
-        }, 
-        {
-            "name": "usb_on_automount", 
-            "value": "/x/"
-        }, 
-        {
-            "name": "server_root", 
-            "value": "/root/backend/usb-backend-pinut/file_upload/"
+    "global_vars":
+    	{
+            "ekstep_root": "/var/www/ekstep/",
+            "telemetry" : "/FILES/",       
+            "usb_on_automount" : "/x/",   
+            "server_root":"/root/backend/usb-backend-pinut/file_upload/",
+            "accepted_extensions":[".ecar"]
         }
-    ]
 }

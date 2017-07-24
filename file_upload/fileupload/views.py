@@ -124,7 +124,7 @@ def verify(request, optional=False):
         with open('/support_files/res.json') as res_file:
             try:
                 json_data = json.load(res_file)
-                staticFileLocRoot = json_data["global_vars"][0].get("value", "")
+                staticFileLocRoot = json_data["global_vars"].get("ekstep_root", "")
             except:
                 return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
         return HttpResponseRedirect('new/')    
