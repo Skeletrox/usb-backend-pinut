@@ -15,12 +15,11 @@ from .serialize import serialize
 from django.urls import reverse
 from .extract import extractit
 from .deleteExtract import deleteit
-<<<<<<< HEAD
+#<<<<<<< HEAD
 from django.conf import settings
 #staticFileLoc = '/file-upload/media/'
-=======
+#=======
 
->>>>>>> refs/remotes/origin/master
 staticFileLocRoot = None
 
 config_file = settings.CONFIG_FILE
@@ -54,12 +53,13 @@ def user_logout(request):
 
 def index(request):
     return render(request,'fileupload/LOGIN.html')
+'''
 <<<<<<< HEAD
-'''    
+    
 =======
 
 
-'''   
+   
 
 Dev's code that is not actually called in the program, can be ignored, kept for future references if needed
 
@@ -100,8 +100,10 @@ def delete_files(request):
     	obj.delete()
     instance.delete()
     return HttpResponse(json.dumps({"id":4}),content_type="application/json")
-'''
 <<<<<<< HEAD
+
+'''
+
 def verify(request, optional=False):
     flag='INIT'
     global optional_flag
@@ -140,8 +142,7 @@ def verify(request, optional=False):
     else:
         return render(request,'fileupload/LOGIN.html',{'invalid':'not a valid username or password',})
 
-=======
->>>>>>> refs/remotes/origin/master
+#=======
 
 class EkFileCreateView(CreateView):
     model = EkFile
@@ -313,7 +314,7 @@ def transfer(request):
                 value = split_dirs(file_to_transfer)
                 file_to_save = EkFile(id = count, file = value)
                 file_to_save.save()
-<<<<<<< HEAD
+#<<<<<<< HEAD
                 files = extractit(file_to_save.path_of_file)
                 for f in files:
                         obj=Content(ekfile=file_to_save,filename=f)
@@ -321,9 +322,8 @@ def transfer(request):
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
-=======
+#=======
                 extractit(file_to_save.path_of_file)
->>>>>>> refs/remotes/origin/master
             #Code above updates the file transferred list
 
             if (total_done <= total_amount - 1 or len(files_existing) == 0):

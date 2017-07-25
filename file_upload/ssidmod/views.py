@@ -22,7 +22,7 @@ def modify_ssid(request):
         if result == 0:
             ssid = new_ssid
             password = new_password
-            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification is complete! Please reconnect if required', 'ssid_name': ssid)
+            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification is complete! Please reconnect if required', 'ssid_name': ssid})
         return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification failure!', 'ssid_name': ssid})
     return render(request, 'ssidmod/mod_ssid.html', {'result_text':None, 'ssid_name': ssid})
 

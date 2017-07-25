@@ -9,13 +9,9 @@ import threading																				#Multithreading
 from shutil import copy2		 																#Copies files
 
 process = None
-<<<<<<< HEAD
 
 config_file = settings.CONFIG_FILE
 with open(config_file) as res_file:
-=======
-with open('/support_files/res.json') as res_file:
->>>>>>> refs/remotes/origin/master
 	try:
 		json_data = json.load(res_file)
                 active_profile = json_data["active_profile"]
