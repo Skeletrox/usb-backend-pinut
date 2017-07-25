@@ -1,18 +1,21 @@
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import subprocess
+import json
+
+CONFIG_FILE = '/support_files/res.json'
+print 'CONFIG_FILE ' + CONFIG_FILE
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print 'BASe_Dir = %s' %(BASE_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '9%$in^gpdaig@v3or_to&_z(=n)3)$f1mr3hf9e#kespy2ajlo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [subprocess.check_output(" x=\"$(ifconfig wlan0 | grep \"inet \" | awk -F'[: ]+' '{ print $4 }')\";echo $x", stderr = subprocess.STDOUT, shell=True)[:-2], '127.0.0.1']
+ALLOWED_HOSTS = [subprocess.check_output(" x=\"$(ifconfig wlan0 | grep \"inet \" | awk -F'[: ]+' '{ print $4 }')\";echo $x", stderr = subprocess.STDOUT, shell=True).replace('\n', '')]
 print 'ALLOWED HOSTS IS %s' %(ALLOWED_HOSTS)
 
 # Application definition
@@ -93,5 +96,11 @@ STATICFILES_DIRS = [
     'file-upload/static',
 ]
 
-MEDIA_URL = '/var/www/ekstep/ecar_files/'
+with open(CONFIG_FILE) as res_file:
+                json_data = json.load(res_file)
+                active_profile = json_data["active_profile"]
+                content_root = json_data[active_profile].get("content_root", "")
+
+MEDIA_URL = content_root
+print 'MEDIA_URL = ' + MEDIA_URL
 MEDIA_ROOT = MEDIA_URL

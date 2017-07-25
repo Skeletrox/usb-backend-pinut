@@ -1,10 +1,31 @@
 {
-    "global_vars":
-    	{
-            "ekstep_root": "/var/www/ekstep/",
-            "telemetry" : "/FILES/",       
-            "usb_on_automount" : "/x/",   
-            "server_root":"/root/backend/usb-backend-pinut/file_upload/",
-            "accepted_extensions":[".ecar"]
-        }
+    "available_profiles": ["ekstep","pinut"],
+
+    "active_profile": "ekstep",
+
+    "ekstep":
+    {
+        "profile_name": "ekstep",
+        "media_root": "/var/www/ekstep/",
+        "content_root": "/var/www/ekstep/ecar_files/",
+        "json_dir": "/var/www/ekstep/json_dir/",
+        "unzip_content": "/var/www/ekstep/content/",
+        "telemetry" : "/var/www/ekstep/telemetry/",       
+        "usb_on_automount" : "/media/",   
+        "server_root":"/home/pi/usb-backend-pinut/file_upload/",
+        "accepted_extensions": [".ecar"]
+    },
+    "pinut":
+    {
+        "profile_name": "pinut",
+        "media_root": "/var/www/pinut_data/",
+        "content_root": "/var/www/pinut_data/content/",
+        "json_dir": "/var/www/pinut_data/json_dir/",
+        "unzip_content": "/var/www/pinut_data/content/",
+        "telemetry" : "/var/www/pinut_data/telemetry/",
+        "usb_on_automount" : "/media/",
+        "server_root": "/home/pi/usb-backend-pinut/file_upload/",
+        "accepted_extensions": [".mp4",".mov",".mp3", ".png", ".jpeg", ".pdf"]
+    }
+
 }

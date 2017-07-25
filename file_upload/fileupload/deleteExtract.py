@@ -1,13 +1,36 @@
-import shutil,os
-def deleteit(name_of_file):
-	print 'GOING TO SEND TO THE SHADOW REALM ' + str(name_of_file)
-	for filename in os.listdir("/var/www/ekstep/content"):
-		folder_to_look_for = name_of_file['folder_file']
-		print folder_to_look_for
-		if name_of_file['folder_file']==filename:
-			print 'deleted file '+filename
-			shutil.rmtree("/var/www/ekstep/content/"+filename)
-			print 'WE HAVE DESTROYED THE FOLDERS'
-		elif name_of_file['json_file']==filename:
-			os.remove("/var/www/ekstep/content/"+filename)
-			print 'GOODBYE JSON'
+import shutil,os,sys,json
+
+sys.path.append("/home/pi/usb-backend-pinut/file_upload/")
+os.environ['DJANGO_SETTINGS_MODULE']='file-upload.settings'
+import django
+from django.http import HttpResponse
+from django.conf import settings
+
+config_file = settings.CONFIG_FILE
+
+def deleteit(files):    
+        print files
+        with open(config_file) as res_file:
+            try:
+                json_data = json.load(res_file)
+                active_profile = json_data["active_profile"]
+                content_path = json_data[active_profile].get("unzip_content", "")
+                json_dir_path = json_data[active_profile].get("json_dir", "")
+            except:
+                return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
+
+        for filename in os.listdir(content_path):
+                if filename in files:
+                        print 'deleted folder '+filename
+                        files.remove(filename)
+                        shutil.rmtree(content_path+filename)
+        
+        
+        print files             
+        
+        #removing the .json files
+        for filename in os.listdir(json_dir_path):
+                if filename in files:
+                        print 'deleted file '+filename
+                        files.remove(filename)
+                        os.remove(json_dir_path+filename)

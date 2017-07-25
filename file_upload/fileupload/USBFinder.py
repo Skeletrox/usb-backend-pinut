@@ -1,4 +1,5 @@
 import os, inspect, json 																				#needed for os files
+from django.conf import settings
 from glob import glob																			#Needed for directories
 import subprocess																				#Running lsusb
 import getpass																					#used for getuser()
@@ -8,12 +9,15 @@ import threading																				#Multithreading
 from shutil import copy2		 																#Copies files
 
 process = None
-#staticFileLoc = '/file-upload/media/'
-#staticFileLoc = '/Programming/Django/UsbBackend/checkUpdates/static/checkUpdates'				#staticFileLoc for local machine. can be changed based on device
-with open('/support_files/res.json') as res_file:
+
+config_file = settings.CONFIG_FILE
+with open(config_file) as res_file:
 	try:
 		json_data = json.load(res_file)
-		staticFileLocRoot = json_data["global_vars"].get("ekstep_root", "")
+                active_profile = json_data["active_profile"]
+                staticFileLocRoot = json_data[active_profile].get("media_root", "")
+                #print "staticFileLocRoot " + staticFileLocRoot
+		#staticFileLocRoot = json_data["global_vars"].get("media_root", "")
 	except:
 		staticFileLocRoot = '/'
 count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?

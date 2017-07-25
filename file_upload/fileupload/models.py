@@ -30,17 +30,18 @@ class EkFile(models.Model):
         
         
 class Content(models.Model):
-	ekfile=models.ForeignKey(EkFile,on_delete=models.CASCADE)
-	folder_file=models.CharField(max_length=250)
-	json_file=models.CharField(max_length=250)
-	def __str__(self):
-		return self.json_file+","+self.folder_file
-		
-	def save(self,*args,**kwargs):
-		super(Content,self).save(*args,**kwargs)
-		
-	def delete(self,*args,**kwargs):
-		super(Content,self).delete(*args,**kwargs)
+        ekfile=models.ForeignKey(EkFile,on_delete=models.CASCADE)
+        filename=models.CharField(max_length=250)
+        
+        def __str__(self):
+                return self.filename
+                
+        def save(self,*args,**kwargs):
+                super(Content,self).save(*args,**kwargs)
+                
+        def delete(self,*args,**kwargs):
+                super(Content,self).delete(*args,**kwargs)
+
 
 class Permission(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)

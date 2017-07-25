@@ -16,10 +16,11 @@ from .serialize import serialize
 from django.urls import reverse
 from .extract import extractit
 from .deleteExtract import deleteit
-
+from django.conf import settings
 #staticFileLoc = '/file-upload/media/'
 staticFileLocRoot = None
 
+config_file = settings.CONFIG_FILE
 
 #files_existing=[]
 #list_of_files=[]
@@ -58,7 +59,7 @@ def user_logout(request):
 
 def index(request):
     return render(request,'fileupload/LOGIN.html')
-    
+'''    
 @ensure_csrf_cookie
 def upload(request):
     if request.method=='POST':
@@ -95,7 +96,7 @@ def delete_files(request):
     	obj.delete()
     instance.delete()
     return HttpResponse(json.dumps({"id":4}),content_type="application/json")
-
+'''
 def verify(request, optional=False):
     flag='INIT'
     global optional_flag
@@ -121,10 +122,13 @@ def verify(request, optional=False):
         ############################################################
         # Load values from res.json file                           #
         ############################################################
-        with open('/support_files/res.json') as res_file:
+        with open(config_file) as res_file:
             try:
                 json_data = json.load(res_file)
-                staticFileLocRoot = json_data["global_vars"].get("ekstep_root", "")
+                active_profile = json_data["active_profile"]
+                staticFileLocRoot = json_data[active_profile].get("media_root", "")
+               # print "staticFileLocRoot " + staticFileLocRoot
+               # staticFileLocRoot = json_data["global_vars"].get("media_root", "")
             except:
                 return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
         return HttpResponseRedirect('new/')    
@@ -146,7 +150,10 @@ class EkFileCreateView(CreateView):
         print 'Before you send post request'
         print self.object.path_of_file
         print '-'*10 + 'WE GON EXTRACT IT YO' + '-'*10
-        extractit(self.object.path_of_file)
+        files = extractit(self.object.path_of_file)
+        for f in files:
+            obj=Content(ekfile=self.object,filename=f)
+            obj.save()
         return response
 
     def form_invalid(self, form):
@@ -165,9 +172,14 @@ class EkFileDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         print 'Attempting to delete ' + str(self.object)
-        content_object = Content.objects.get(ekfile = self.object)
-        deleteit({'folder_file':content_object.folder_file,'json_file':content_object.json_file})
-        content_object.delete()
+        files = Content.objects.filter(ekfile = self.object.id)
+        filename = []
+        for f in files:
+                filename.append(f.filename)
+                f.delete()
+        deleteit(filename)
+        #deleteit({'folder_file':content_object.folder_file,'json_file':content_object.json_file})
+        #content_object.delete()
         self.object.delete()
         response = JSONResponse(True, mimetype=response_mimetype(request))
         response['Content-Disposition'] = 'inline; filename=files.json'
@@ -335,7 +347,10 @@ def transfer(request):
                 #file_to_save = File(id = current_file_id, file_link = file_to_transfer, create_date=timezone.now(), file_desc="Buenos Dias", file_size=file_size)
                 print '[Z]About to save ' + value
                 file_to_save.save()
-                extractit(file_to_save.path_of_file)
+                files = extractit(file_to_save.path_of_file)
+                for f in files:
+                        obj=Content(ekfile=file_to_save,filename=f)
+                        obj.save()
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)

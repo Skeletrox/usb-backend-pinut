@@ -4,6 +4,7 @@
 ##############################################
 
 import os, json, collections
+from django.conf import settings
 
 
 def decorate():
@@ -54,30 +55,43 @@ def iter_through(obj, prompt):
 # us to do only a single level of extraction and return everything #
 # that is defined in the global_vars dictionary entry			   #
 ####################################################################
+config_file = settings.CONFIG_FILE
+
+def get_active_profile():
+    with open(config_file) as res:
+        try:
+            json_data = json.load(res)
+        except:
+            return None
+    active_profile = json_data["active_profile"]
+    return active_profile
 
 def iter_vars():
-	with open('/support_files/res.json') as res:
-		try:
-			json_data = json.load(res)
-		except:
-			return None
-	list_of_vars = json_data.get("global_vars", {})
-	return list_of_vars
+    with open(config_file) as res:
+        try:
+            json_data = json.load(res)
+        except:
+            return None
+    #active_profile = json_data["active_profile"]
+    active_profile = get_active_profile()
+    list_of_vars = json_data.get(active_profile, {})
+    return list_of_vars
 
 def update_vars(new_var_list):
-	with open('/support_files/res.json', 'w') as res:
-		try:
-			new_dict = {"global_vars" : new_var_list}
-			res.write(json.dumps(new_dict, sort_keys=True, indent=4))
-			return True
-		except:
-			return False
+    with open(config_file, 'w') as res:
+        try:
+            active_profile = get_active_profile()
+            new_dict = {active_profile : new_var_list}
+            res.write(json.dumps(new_dict, sort_keys=True, indent=4))
+            return True
+        except:
+            return False
 
 def main():
     decorate()
     print 'res.json changer'
     decorate()
-    with open('/support_files/res.json') as res:
+    with open(config_file) as res:
         try:
             json_data = json.load(res)
         except:
@@ -91,7 +105,7 @@ def main():
     decorate_light()
     answer = raw_input('Update res.json? [Y/n]: ')
     if answer.lower() == 'y':
-        with open('/support_files/res.json', 'w') as res:
+        with open(config_file, 'w') as res:
             res.write(json.dumps(json_data, sort_keys=True, indent=4))
         print 'res.json updated!'
         return
