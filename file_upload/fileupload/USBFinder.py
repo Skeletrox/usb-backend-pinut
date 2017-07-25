@@ -9,9 +9,13 @@ import threading																				#Multithreading
 from shutil import copy2		 																#Copies files
 
 process = None
+<<<<<<< HEAD
 
 config_file = settings.CONFIG_FILE
 with open(config_file) as res_file:
+=======
+with open('/support_files/res.json') as res_file:
+>>>>>>> refs/remotes/origin/master
 	try:
 		json_data = json.load(res_file)
                 active_profile = json_data["active_profile"]
@@ -20,23 +24,16 @@ with open(config_file) as res_file:
 		#staticFileLocRoot = json_data["global_vars"].get("media_root", "")
 	except:
 		staticFileLocRoot = '/'
-count = 0																						#Total number of threads called from main thread, could be useful in determining insertions and deletions?
 
 def get_usb_name():
-	blkid_output = subprocess.check_output("blkid", shell=True)
-	blkid_usb_line_list = blkid_output.split("\n")
-	blkid_usb_line = blkid_usb_line_list[len(blkid_usb_line_list) - 2]
-	print (blkid_usb_line)
-	is_usb = check_if_line_usb(blkid_usb_line)
-	if not is_usb:
-		return None
-	label_loc = blkid_usb_line.index("LABEL")
-	for i in range(label_loc, len(blkid_usb_line)):
-		if blkid_usb_line[i] == ' ':
-			break
-	usb_label = blkid_usb_line[label_loc+7:i-1]
-	return usb_label
-
+	lsblk_out = subprocess.check_output("lsblk", shell=True)
+	lsblk_list = lsblk_out.split('\n')
+	media_dir = None
+	for line in lsblk_list:
+		if '/media/' in line:
+			media_loc = line.index('/media/')
+			media_dir = line[media_loc:].strip()
+	return media_dir
 
 def check_if_line_usb(line):
 	UUID_beg = line.index('UUID') + 5
@@ -46,32 +43,12 @@ def check_if_line_usb(line):
 		return True
 	return False
 
-
 def transfer_file(file):
-	print ('Initiating file transfer')
-		#files = [file for file in os.listdir(".") if not os.path.isdir(file)]					#Copies only files as we use a flat filesystem.
-		#for file in files:
 	sendString = "cp " + file + " " + staticFileLocRoot + file
-	proc = subprocess.Popen (sendString, shell=True)									#Enhanced copy function
+	proc = subprocess.Popen (sendString, shell=True)									
 	proc.communicate()[0]
 	return proc.returncode
-	print ('File transfer complete!')
-'''
-def enableAutoMount():
-	fileLines = [ 'KERNEL!="sd[a-z][0-9]", GOTO="media_by_label_auto_mount_end" ',
-				  'IMPORT{program}="/sbin/blkid -o udev -p %N" ',
-				  'ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"  ',
-				  'ENV{ID_FS_LABEL}=="", ENV{dir_name}="usbhd-%k" ',
-				  'ACTION=="add", ENV{mount_options}="relatime"  ',
-				  'ACTION=="add", ENV{ID_FS_TYPE}=="vfat|ntfs", ENV{mount_options}="$env{mount_options},utf8,gid=100,umask=002"  ',
-				  'ACTION=="add", RUN+="/bin/mkdir -p /media/%E{dir_name}", RUN+="/bin/mount -o $env{mount_options} /dev/%k /media/%E{dir_name}" ',
-				  'ACTION=="remove", ENV{dir_name}!="", RUN+="/bin/umount -l /media/%E{dir_name}", RUN+="/bin/rmdir /media/%E{dir_name}"  ',
-				  'LABEL="media_by_label_auto_mount_end"']
-	f = open('/etc/udev/rules.d/11-media-by-label-auto-mount.rules', 'w')
-	for line in fileLines:
-		f.write(line+'\n')
-	subprocess.Popen("udevadm control --reload-rules", shell=True)
-'''
+
 def attemptMount():		
 	lsblk_out = subprocess.check_output("lsblk", shell=True)
 	lsblk_list = lsblk_out.split('\n')
@@ -80,37 +57,9 @@ def attemptMount():
 		if '/media/' in line:
 			media_loc = line.index('/media/')
 			media_dir = line[media_loc:].strip()
-	print media_dir
 	if media_dir is None:
 		return None
 	os.chdir(media_dir)
-	'''
-	global count																#Runs when USB is mounted
-	os.chdir('/media/')														#Returns the storage location [Should be same across all Linux devices]
-	blkid_output = subprocess.check_output("blkid", shell=True)
-	blkid_usb_line_list = blkid_output.split("\n")
-	result = False
-	blkid_usb_line = None
-	for line in blkid_usb_line_list:
-		if check_if_line_usb(line):
-			result = True
-			blkid_usb_line = line
-			break
-	if not result:
-		return None
-	label_loc = blkid_usb_line.index("LABEL")
-	for i in range(label_loc, len(blkid_usb_line)):
-		if blkid_usb_line[i] == ' ':
-			break
-	usb_label = blkid_usb_line[label_loc+7:i-1]
-	print (usb_label)
-	folders = [name for name in os.listdir(".") if (name == usb_label and os.path.isdir(name))]
-	if len(folders) == 0:
-		return None	
-	currentFolder = folders[0]
-	filedict=[]																					#A dictionary of all files
-	os.chdir(currentFolder)
-	'''
 	temps = [name for name in os.listdir(".")]
 	print 'Temporary files are ' + str(temps)
 	files = []
@@ -120,17 +69,9 @@ def attemptMount():
 				files.append(os.path.join(root, name))
 	return files
 
-def attemptRemoval():																			#Removes files
-	global count
-	count += 1
-	'''
-	byeThread = deleteThread(count)
-	byeThread.start()
-	'''
-
 def main():
 	#enableAutoMount()
-	df = subprocess.check_output("lsusb", stderr=subprocess.STDOUT)								#suprocess prints to stderr for some reason, making it think stdout is stderr
+	df = subprocess.check_output("lsusb", stderr=subprocess.STDOUT)								#subprocess prints to stderr for some reason, making it think stdout is stderr
 	oldDeviceList = df.split("\n")																#gets list of previously connected usb devices
 	while True:
 		df = subprocess.check_output("lsusb", stderr=subprocess.STDOUT)							#do it again
