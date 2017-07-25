@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.auth import logout, update_session_auth_hash, authenticate
 from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
@@ -34,14 +34,17 @@ def verify(request):
     flag = 'FAKE'
     global is_auth, user, password, perm_dict
     try:
-        user = User.objects.get(username = request.POST.get('email', None))
+        user_str = User.objects.get(username = request.POST.get('email', None))
         password = request.POST.get('password', None)
         flag = 'REAL'
     except User.DoesNotExist:
         pass
-    if ((flag == 'REAL') and user.check_password(password)):
-        perm_dict = UserPermissions(user)
+    if ((flag == 'REAL') and user_str.check_password(password)):
+        perm_dict = UserPermissions(user_str)
         is_auth = True
+        user = authenticate(username = user_str, password = password)
+        if user is None:
+            return HttpResponseRedirect('../')
         return HttpResponseRedirect('/upload/new/')
     global fail
     fail = True 
@@ -73,11 +76,11 @@ def user_changepass(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
+            update_session_auth_hash(request, user)
             return HttpResponseRedirect('/backadmin/change_pass')
         else:
-            messages.error(request, 'Please correct the error below.')
+            print 'FAIL'
+            return HttpResponseRedirect('/backadmin/change_pass')
     else:
         form = PasswordChangeForm(request.user)
-    return render(request, 'backadmin/change_password.html', {'form': form})
+        return render(request, 'backadmin/change_password.html', {'form': form})
