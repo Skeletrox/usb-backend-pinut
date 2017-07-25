@@ -21,7 +21,6 @@ def update_data(request):
         for user in user_list:
             for p in permission_strings:
                 result = request.POST.get(str(user) + '_' + str(p), "off")
-                print str(user) + '_' + p + ':' + result
                 obj = Permission.objects.get(user = user)
                 setattr(obj, p, result == "on")
                 obj.save()                              #Saving the permission object is much easier than saving the user object
@@ -43,10 +42,6 @@ def display(request):
         permission = str(permission_list[i])[index+1:]
         permission_strings.append(permission)
     permission_strings = sorted(permission_strings)
-    print permission_strings
-    print user_list
-    for user in user_list:
-        print user
     permission_dictionary = {}
     for user in user_list:
         model_as_dict = model_to_dict(Permission.objects.get(user = user))
@@ -57,6 +52,5 @@ def display(request):
         for perm in permission_strings:
             sorted_dict[perm] = model_as_dict[perm]
         permission_dictionary[str(user)] = sorted_dict
-    print permission_dictionary
     return render(request, 'changepermissions/change.html', 
         {'permission_list' : permission_strings, 'user_list' : user_list, 'permission_dict' : permission_dictionary})

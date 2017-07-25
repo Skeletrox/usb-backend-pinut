@@ -1,5 +1,8 @@
 import subprocess
 
+##################################################
+# Expected location is /etc/hostapd/hostapd.conf #			    
+##################################################
 wifi_file_name = '/etc/hostapd/hostapd.conf'
 
 ssid_dict = {'ssid':'', 'password':''}
@@ -13,8 +16,6 @@ def refresh_dict():
 	for line in wifi_file:
 		if line[:4] == 'ssid':
 			ssid_dict['ssid'] = line[5:]
-		if line[:14] == 'wpa_passphrase':
-			ssid_dict['password'] = line[15:]
 
 def change_manually(parameter, name_string):
 	global wifi_file_name
@@ -34,7 +35,7 @@ def change_manually(parameter, name_string):
 	command = "mv " + wifi_file_name + '_backup' + ' ' + wifi_file_name
 	opened_process = subprocess.Popen(command, shell=True)
 	opened_process.communicate()[0]
-	return opened_process.returncode
+	return opened_process.returncode #Returns 0 if successful, 1/-1 if failure
 
 def main():
 	changer = lambda x, y : change_manually(x, y)

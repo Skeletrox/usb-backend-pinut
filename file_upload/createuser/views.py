@@ -26,11 +26,7 @@ def index(request):
     else:
         form = UserCreationForm()
         return render(request, 'createuser/user_create.html', {'form' : form})
-'''
-def index(request):
-    global message
-    return render(request, 'createuser/user_create.html', {'message':message})
-'''
+
 def delete_user(request):
     users = [user for user in User.objects.all() if not user.is_superuser]
     return render(request, 'createuser/user_delete.html', {'users': users})
