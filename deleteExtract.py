@@ -1,11 +1,18 @@
 import shutil,os
-def deleteit(name_of_file):
-	print name_of_file
+def deleteit(files):	
+	print files
 	for filename in os.listdir("/var/www/ekstep/content"):
-		if name_of_file['folder_file']==filename:
-			print 'deleted file '+filename
+		if filename in files:
+			print 'deleted folder '+filename
+			files.remove(filename)
 			shutil.rmtree("/var/www/ekstep/content/"+filename)
-		elif name_of_file['json_file']==filename:
-			os.remove("/var/www/ekstep/content/"+filename)
-				
-		
+	
+	
+	print files		
+	
+	#removing the .json files
+	for filename in os.listdir("/var/www/ekstep/content/json_files"):
+		if filename in files:
+			print 'deleted file '+filename
+			files.remove(filename)
+			os.remove("/var/www/ekstep/content/json_files/"+filename)
