@@ -29,17 +29,22 @@ def extractit(path_of_file):
 	file_name=file_path[index+1:]
 	shutil.copy2(file_path,folder+"/"+filename+"/"+file_name)
 
-	#change the name of manifest file
-	change_name=""
-	for filename in os.listdir(folder):
-		if(filename.endswith(".json")):
-			continue
-		else:
-			change_name=filename
-	print change_name
-
+	#change the name of manifest file to folder name
+	change_name=folder[folder.rfind('/')+1:]
+	
+	#print change_name
 	#renames the manifest file inside the ekstep file uploaded folder
 	os.rename(folder+"/manifest.json",folder+"/"+change_name+".json")
+	
+	#list for storing the extracted items names
+	content_list=[]
+	
+	#collects the folders and files extracted inside the content_list
+	
+	for filename in os.listdir(folder):
+		content_list.append(filename)
+		
+	#print content_list
 
 	index=file_path.find("/ecar_files")
 	content_path=file_path[:index]
@@ -51,14 +56,18 @@ def extractit(path_of_file):
 
 	for filename in os.listdir(folder):
 		print filename
-		try:
-			shutil.move(folder+"/"+filename,content_path)
-		except:
-			print "This file already exists"
-			break
+		if(filename.endswith(".json")):
+			shutil.move(folder+"/"+filename,content_path+"/"+"json_files")
+		else:
+		
+			try:
+				shutil.move(folder+"/"+filename,content_path)
+			except:
+				print "This file already exists"
+				break
 	
 	#remove's the ekstep file uploaded folder which is empty right now 
 	shutil.rmtree(folder)
 	#name of the folder which we got after extracting .ecar file
-	return change_name
+	return content_list
 	
