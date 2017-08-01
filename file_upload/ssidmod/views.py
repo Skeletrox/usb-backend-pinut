@@ -18,11 +18,12 @@ def modify_ssid(request):
         if len(new_ssid) > 0:
             result = change_manually('ssid', new_ssid)
         if type(result) is not int:
-            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'Please enter a valid value', 'ssid_name': ssid, 'password_name': password})
+            #return render(request, 'ssidmod/mod_ssid.html', {'result_text':'Please enter a valid value', 'ssid_name': ssid, 'password_name': password})
+            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'Please enter a valid value', 'ssid_name': ssid})
         if result == 0:
             ssid = new_ssid
-            password = new_password
-            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification is complete! Please reconnect if required', 'ssid_name': ssid})
+            #password = new_password
+            return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification is complete! Please restart the device to connect to the new SSID', 'ssid_name': ssid})
         return render(request, 'ssidmod/mod_ssid.html', {'result_text':'SSID modification failure!', 'ssid_name': ssid})
     return render(request, 'ssidmod/mod_ssid.html', {'result_text':None, 'ssid_name': ssid})
 

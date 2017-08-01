@@ -75,8 +75,6 @@ def extractit(path_of_file):
         #move the contents of the ekstep file uploaded folder
 
         for filename in os.listdir(folder):
-            print "filename -- " + filename
-            print "folder -- " + folder
             if(filename.endswith(".json")):
                 shutil.move(folder+"/"+filename,json_dir_path)
             else:

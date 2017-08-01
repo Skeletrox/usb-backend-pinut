@@ -315,8 +315,8 @@ def transfer(request):
                 file_to_save = EkFile(id = count, file = value)
                 file_to_save.save()
 #<<<<<<< HEAD
-                files = extractit(file_to_save.path_of_file)
-                for f in files:
+                files2 = extractit(file_to_save.path_of_file)
+                for f in files2:
                         obj=Content(ekfile=file_to_save,filename=f)
                         obj.save()
                 print '[Z]Saved ' + value
