@@ -75,15 +75,16 @@ def extractit(path_of_file):
         #move the contents of the ekstep file uploaded folder
 
         for filename in os.listdir(folder):
-            print filename
+            print "filename -- " + filename
+            print "folder -- " + folder
             if(filename.endswith(".json")):
-                shutil.move(folder+"/"+filename,json_dir_path+"/")
+                shutil.move(folder+"/"+filename,json_dir_path)
             else:
                 try:
                     shutil.move(folder+"/"+filename,content_path)
                 except:
                     print "This file already exists"
-                    break
+                    #break
 
         #remove's the ekstep file uploaded folder which is empty right now 
         shutil.rmtree(folder)

@@ -27,7 +27,7 @@
 document.querySelector("#usb")
       .addEventListener("click", function () {
         
-        window.open("http://127.0.0.1:8000/upload/transfer/", "_self");
+        window.open("http://192.168.0.1:8008/upload/transfer/", "_self");
         });
 
 document.getElementById('usb_down').addEventListener('click', function() {

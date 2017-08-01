@@ -15,7 +15,7 @@ with open(config_file) as res_file:
 	try:
 		json_data = json.load(res_file)
                 active_profile = json_data["active_profile"]
-                staticFileLocRoot = json_data[active_profile].get("media_root", "")
+                staticFileLocRoot = json_data[active_profile].get("content_root", "")
                 #print "staticFileLocRoot " + staticFileLocRoot
 		#staticFileLocRoot = json_data["global_vars"].get("media_root", "")
 	except:
@@ -40,7 +40,11 @@ def check_if_line_usb(line):
 	return False
 
 def transfer_file(file):
-	sendString = "cp " + file + " " + staticFileLocRoot + file
+        print "file " + file + "staticFileLocRoot " + staticFileLocRoot
+        index=file.rfind('/')
+        file_name=file[index+1:]
+        print "file_name " + file_name + "staticFileLocRoot " + staticFileLocRoot
+	sendString = "cp " + file + " " + staticFileLocRoot + file_name
 	proc = subprocess.Popen (sendString, shell=True)									
 	proc.communicate()[0]
 	return proc.returncode

@@ -323,7 +323,7 @@ def transfer(request):
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
 #=======
-                extractit(file_to_save.path_of_file)
+                #extractit(file_to_save.path_of_file)
             #Code above updates the file transferred list
 
             if (total_done <= total_amount - 1 or len(files_existing) == 0):
