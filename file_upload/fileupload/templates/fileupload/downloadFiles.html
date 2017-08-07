@@ -16,6 +16,11 @@
 		
 		<div class="jumbotron">
 			{% if files_existing %}
+				<div class = "progress">
+							<div class = "progress-bar progress-bar-striped active" role="progressbar" aria-valuenow = "{{ percentage_done }}" aria-valuemin = "0" aria-valuemax="100"
+									style = "width:{{ percentage_done }}%">{{ percentage_done }}%
+							</div>
+						</div>
 				<!-- Code to open a box and get the files here -->
 				<p>Files being downloaded:
 					{% for file in files_existing %}
@@ -34,11 +39,6 @@
 							<p><script tyoe="application/javascript">
 								document.TransferFiles.submit();
 							</script></p>
-						<div class = "progress">
-							<div class = "progress-bar progress-bar-striped active" role="progressbar" aria-valuenow = "{{ percentage_done }}" aria-valuemin = "0" aria-valuemax="100"
-									style = "width:{{ percentage_done }}%">{{ percentage_done }}%
-							</div>
-						</div>
 						
 
 					</form>

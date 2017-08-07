@@ -18,14 +18,14 @@ def index(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            return HttpResponseRedirect('/changepermissions')
+            #username = form.cleaned_data.get('username')
+            #raw_password = form.cleaned_data.get('password1')
+            #userx = authenticate(username=username, password=raw_password)
         return HttpResponseRedirect('/createuser/new/')
     else:
+        users = [user for user in User.objects.all() if not user.is_superuser]
         form = UserCreationForm()
-        return render(request, 'createuser/user_create.html', {'form' : form})
+        return render(request, 'createuser/user_create.html', {'form' : form, 'users' : users})
 
 def delete_user(request):
     users = [user for user in User.objects.all() if not user.is_superuser]
@@ -36,4 +36,4 @@ def delete(request):
         primary = int(request.POST.get("delete_me", ""))
         user_to_destroy = User.objects.get(pk=primary)
         user_to_destroy.delete()
-    return HttpResponseRedirect('/createuser/delete_user/')
+    return HttpResponseRedirect('/createuser/new/')

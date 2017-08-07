@@ -49,16 +49,18 @@ def remove_scripts(text):
 	return text
 
 def write_to_file(filename, data):
-	file_to_write = open('changecaptive/static/changecaptive/' + filename, 'wb+')
+	file_to_write = open('/var/www/ekstep/' + filename, 'wb+')
+	if filename.endswith(".apk"):
+		print len(data)
 	file_to_write.write(data)
 	file_to_write.close()
 	if filename.endswith(".png"):
-		command = 'ffmpeg -i changecaptive/static/changecaptive/logo.png -vf scale=90:31 changecaptive/static/changecaptive/logo2.png -y'
+		command = 'ffmpeg -i /var/www/ekstep/logo.png -vf scale=90:31 /var/www/ekstep/logo2.png -y'
 		process = subprocess.Popen(command, shell=True)
 		process.communicate()[0]
 		result = process.returncode
 		if result == 0:
-			command2 = 'mv -f changecaptive/static/changecaptive/logo2.png changecaptive/static/changecaptive/logo.png'
+			command2 = 'mv -f /var/www/ekstep/logo2.png /var/www/ekstep/logo.png'
 			process2 = subprocess.Popen(command2, shell=True)
 			process2.communicate()[0]
 			result = process2.returncode
@@ -66,17 +68,17 @@ def write_to_file(filename, data):
 def captive_display(request):
 	heading = ""
 	text = ""
-	heading = open('changecaptive/static/changecaptive/header.txt', 'r').read()
-	text = open('changecaptive/static/changecaptive/text.txt', 'r').read()
+	heading = open('/var/www/ekstep/header.txt', 'r').read()
+	text = open('/var/www/ekstep/text.txt', 'r').read()
 	status_text = None
 	fail_text = None
 	try:
-		logoexists = open('changecaptive/static/changecaptive/logo.png', 'rb')
+		logoexists = open('/var/www/ekstep/logo.png', 'rb')
 		logo = True
 	except IOError:
 		logo = False
 	try:
-		apkexists = open('changecaptive/static/changecaptive/app.apk', 'rb')
+		apkexists = open('/var/www/ekstep/app.apk', 'rb')
 		apk = True
 	except IOError:
 		apk = False
@@ -107,6 +109,6 @@ def change_data(request):
 		write_to_file('text.txt', text_data)
 		if header_data is not None:
 			write_to_file('header.txt', header_data)
-		edit_php_file(header_data, text_data)
+		#edit_php_file(header_data, text_data)
 	status_text = 'ok'
 	return HttpResponseRedirect('../')
