@@ -1,27 +1,57 @@
 {% extends "backadmin_base.html" %}
 
 {% block content %}
+	<h2>User Management</h2>
 	<div class="container" align="CENTER">
-		<h2>User Creation</h2>
-		<form method="POST">
-		<div align="CENTER">
-			{% csrf_token %}
-			{% for field in form %}
-			<p> {{ field.label_tag }} {{ field }}</p>
+	<table class="table table-striped ">
+		<thead>
+			<tr>
+				<th>User</th>
+				<th>Delete User?</th>
+				<th>Edit Permissions?</th>
+			</tr>
+		</thead>
+		{% for user in users %}
+		<tbody>
+			<tr>
+				<td>{{ user.username }}</td>
+				<form action = "../delete/" method = "POST">
+					{% csrf_token %}
+					<input name = 'delete_me' value = '{{ user.pk }}' type="hidden">
+					<td><input class = "btn btn-danger" type="submit" value="Delete User"></td>
+				</form>
+				<form action = "/changepermissions/" method = "POST">
+					{% csrf_token %}
+					<input name = 'edit_me' value = '{{ user.pk }}' type="hidden">
+					<td><input class = "btn btn-primary" type="submit" value="Edit Permissions"></td>
+				</form>
+			</tr>
+		</tbody>
 			{% endfor %}
-			<hr />
-		</div>
-			<button type="submit" class = "btn btn-primary">Create User</button>
-		</form><hr />
-		<div class = "jumbotron">
-			<h3>RULES</h3>
-			<hr />
-			{% for field in form %}
-				{% if field.help_text %}
-					<p>{{ field.label_tag }} {{ field.help_text }}</p>
-				{% endif %}
-			{% endfor %}
-		</div>
+		</table>
+		<hr />
+		<btn class = "btn btn-primary" id="createuser">Create a new user</btn>
+		<div id = "ucreate">
+			<h2>User Creation</h2>
+			<form method="POST">
+				<div align="CENTER">
+					{% csrf_token %}
+					{% for field in form %}
+						<p> {{ field.label_tag }} {{ field }}</p>
+					{% endfor %}
+					<hr />
+					<h3>RULES</h3>
+					<hr />
+					{% for field in form %}
+						{% if field.help_text %}
+							<p>{{ field.label_tag }} {{ field.help_text }}</p>
+						{% endif %}
+					{% endfor %}
+				</div>
+				<button type="submit" class = "btn btn-primary">Create User</button>
+			</form><hr />
+		</div>	
+	</div>
 		<!--{% if message %}
 			<div class = "jumbotron">
 				<p>{{ message }}</p>
@@ -29,17 +59,13 @@
 			<hr />
 		{% endif %}
 		<button class="btn btn-primary btn-lg" onclick="submit_user()">Create User!</button>
-	</div>
+	</div-->
 	<script>
-		function submit_user() {
-			var p1 = document.getElementById("password_input").value;
-			var p2 = document.getElementById("password_check_input").value;
-			if (p1 == p2) {
-				document.getElementById("user_form").submit();
-			}
-			else {
-				alert('Passwords do not match!');
-			}
-		}
-	</script -->
+		$(function() {
+			$("#ucreate").hide();
+		});
+		$("#createuser").click(function() {
+			$("#ucreate").show();
+		});
+	</script>
 {% endblock %}

@@ -124,8 +124,8 @@ $.ajaxSetup({
 		if (document.getElementById("logo_name_apk").innerHTML != 'No file chosen') {
 			var apkfile = document.getElementById('name_apk').files[0];
 			sendfile(apkfile, 'change_apk/');
-			document.getElementById('formdata').submit();
 		}
+		document.getElementById('formdata').submit();
 	};
 
 $('form').submit(function(e){

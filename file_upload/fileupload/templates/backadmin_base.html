@@ -4,35 +4,28 @@
     <meta charset="utf-8">
     <title>Administration</title>
     <!-- JQuery -->
-    <script src="/static/js/jquery-3.2.1.min.js"></script>    
+    <script src="/static/js/jquery-3.2.1.min.js"></script> 
 </head>
 <body>
-    <nav class = "navbar navbar-inverse">
-        <div class = "container-fluid">
-            <div class = "navbar-header">
-                <span class = "navbar-brand"><b>Administration</b></span>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="{% url 'fileupload:upload-new' %}">File Upload</a></li>
-                <li id="ssid_mod"><a href="{% url 'ssidmod:index' %}">SSID Modification</a></li>
-                <li id="captive_mod"><a href="{% url 'changecaptive:index' %}">Captive Portal Modification</a></li>
-                <li id="permissions_mod"><a href="{% url 'changepermissions:display' %}">Change Permissions for Users</a></li>
-                <li id="change_vars"><a href="{% url 'changevars:loadpage' %}">Change Global Variables</a></li>
-                <li id="user_create"><a href="{% url 'createuser:index' %}">Create User</a></li>
-                <li id="user_delete"><a href="{% url 'createuser:delete_user' %}">Delete User</a></li>
-                <li id="change_ap_mode"><a href = '#' onclick="change_ap()">Change AP Mode</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href = "#"><span id="username"></span></a></li>
-                <li><a href = "{% url 'backadmin:user_changepass' %}">Change password</a></li>
+        <div class = "col-md-2 border-right-1">
+            <ul class = "nav nav-pills nav-stacked">
+            <li><a href = 'javascript:void(0);'><b>User: <span id="username"></span></b></a></li>
+                <li id = "file_upload"><a href="{% url 'fileupload:upload-new' %}">File Upload</a></li>
+                <li id = "ssid_mod"><a href="{% url 'ssidmod:index' %}">SSID Modification</a></li>
+                <li id = "captive_mod"><a href="{% url 'changecaptive:index' %}">Captive Portal Modification</a></li>
+                <li id = "change_vars"><a href="{% url 'changevars:loadpage' %}">Change Global Variables</a></li>
+                <li id = "user_create"><a href="{% url 'createuser:index' %}">Superuser Tasks</a></li>
+                <li id = "change_pass"><a href = "{% url 'backadmin:user_changepass' %}">Change password</a></li> <hr />
+                <li id = "change_ap_mode"><a href = '#' onclick="change_ap()">Change AP Mode</a></li> <hr />
                 <li><a href="{% url 'backadmin:user_logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
-    </nav>
 </div>
+<div class = "col-md-6">
 {% block content %}
     <h1>No content set</h1>
 {% endblock %}
+</div>
 </body>
     <meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bars, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads and client-side image resizing. Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,11 +82,31 @@
         	}
         	if (!(obj.superuser_tasks)) {
         		document.getElementById("change_vars").style.display="None";
-        		document.getElementById("permissions_mod").style.display="None";
                 document.getElementById("user_create").style.display="None";
-                document.getElementById("user_delete").style.display="None";
         	}
         });
+        var t = window.location.pathname;
+        switch(t) {
+            case '/upload/new/':
+                document.getElementById("file_upload").setAttribute("class", "active");
+                break;
+             case '/ssidmod/modify_ssid/':
+                document.getElementById("ssid_mod").setAttribute("class", "active");
+                break;
+             case '/changecaptive/':
+                document.getElementById("captive_mod").setAttribute("class", "active");
+                break;
+             case '/changevariables/':
+                document.getElementById("change_vars").setAttribute("class", "active");
+                break;
+             case '/createuser/new/':
+                document.getElementById("user_create").setAttribute("class", "active");
+                break;
+             case '/backadmin/change_pass/':
+                document.getElementById("change_pass").setAttribute("class", "active");
+                break;
+        }
+
     });
 
     function change_ap() {
