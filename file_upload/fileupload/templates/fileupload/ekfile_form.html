@@ -5,8 +5,17 @@
 <input type="hidden" id="refresh" value="no">
 <div class="container">
     <h1 id="h">File Upload</h1><br/>
+    <form id="telemetry_form">
+    {% csrf_token %}
+        <input type="hidden" name="counter" id="counter" value="INIT">
+    </form>
     <div class="jumbotron"><p id = 'usb_text'></p></div>
     <br>
+    <div class="progress" id="progress_outer"> 
+        <div class = "progress-bar progress-bar-striped active" role="progressbar"
+            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%" id="progress_inner">0%
+        </div>
+    </div>
     <!-- The file upload form used as target for the file upload widget -->
     <form id="fileupload" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
         
@@ -109,7 +118,8 @@
 <script src="/static/js/csrf.js"></script>
 <script>
 $(function() {
-    
+    $("#telemetry_progress").hide();
+    $("#progress_outer").hide();
     $.getJSON('../verify_USB/', function (response) {
             var obj = JSON.parse(JSON.stringify(response));
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + obj.data);
@@ -117,6 +127,49 @@ $(function() {
             document.getElementById("usb_text").innerHTML = obj.usb_text;
         });
 });
+
+function telemetry_transfer() {
+    var loop = true;
+    $('#telemetry_form').submit({
+        url = 'download_to_USB',
+        datatype = 'json',
+        success : function(resp) {
+            $("#progress_outer").show();
+            var z = JSON.parse(JSON.stringify(resp));
+            var fileLength = parseInt(z.length);
+            var i = 0;
+            var current = parseInt(z.value) + 1;
+            var maximum = parseInt(z.length);
+            for (; i < fileLength; i++) {
+                document.getElementById("counter").setAttribute("value", current);
+                var percent = current/maximum*100;
+                var pbar = document.getElementById("progress_inner");
+                pbar.setAttribute("style", "width:"+percent.toString()+"%");
+                pbar.innerHTML = percent.toString()+"%";
+                $('#telemetry_form').submit({
+                    url = 'download_to_USB',
+                    datatype = 'json',
+                    success : function(resp) {
+                        z = JSON.parse(JSON.stringify(resp));
+                        if (z.value == null) {
+                            document.getElementById("usb_text").innerHTML = z.res;
+                            loop = false;
+                            return;
+                        }
+                        else {
+                            current = parseInt(z.value);
+                        }
+                    }
+                });
+                if (!(loop)) {
+                    $("#progress_outer").hide();
+                    return;
+                }
+            }
+        }
+    });
+
+}
 </script>
 
 {% endblock %}

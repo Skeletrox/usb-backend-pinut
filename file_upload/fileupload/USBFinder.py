@@ -16,10 +16,12 @@ with open(config_file) as res_file:
         json_data = json.load(res_file)
         active_profile = json_data["active_profile"]
         staticFileLocRoot = json_data[active_profile].get("content_root", "")
+        data_folder = json_data[active_profile].get("data_folder", "")
                 #print "staticFileLocRoot " + staticFileLocRoot
         #staticFileLocRoot = json_data["global_vars"].get("media_root", "")
     except:
         staticFileLocRoot = '/'
+        data_folder = ''
 
 def get_usb_name():
     lsblk_out = subprocess.check_output("lsblk", shell=True)
@@ -74,7 +76,7 @@ def attemptMount():
                 break
     if media_dir is None:
         return None
-    os.chdir(media_dir)
+    os.chdir(media_dir + data_folder)
     temps = [name for name in os.listdir(".")]
     print 'Temporary files are ' + str(temps)
     files = []

@@ -1,4 +1,4 @@
-import json, os, subprocess, getpass
+import json, os, subprocess, getpass, shutil
 import logging
 
 from .USBFinder import attemptMount,transfer_file, get_usb_name
@@ -15,6 +15,7 @@ from .serialize import serialize
 from django.urls import reverse
 from .extract import extractit
 from .deleteExtract import deleteit
+from distutils.dir_util import copy_tree
 #<<<<<<< HEAD
 from django.conf import settings
 #staticFileLoc = '/file-upload/media/'
@@ -34,6 +35,8 @@ optional_flag = False
 percentage_done = 0
 perm_dict = None
 user = None
+telemetry = None
+local_files = []
 
 class User_Permissions:
     def __init__(self, user):
@@ -108,7 +111,7 @@ def verify(request, optional=False):
     flag='INIT'
     global optional_flag
     optional_flag = False
-    global is_auth, user, password
+    global is_auth, user, password, telemetry
     if optional:
         optional_flag = True
         return HttpResponseRedirect('../new')
@@ -134,6 +137,7 @@ def verify(request, optional=False):
                 json_data = json.load(res_file)
                 active_profile = json_data["active_profile"]
                 staticFileLocRoot = json_data[active_profile].get("media_root", "")
+                telemetry = json_data[active_profile].get("telemetry", "")
                # print "staticFileLocRoot " + staticFileLocRoot
                # staticFileLocRoot = json_data["global_vars"].get("media_root", "")
             except:
@@ -166,7 +170,7 @@ class EkFileCreateView(CreateView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
-	print data + ' omg fail '
+	    print data + ' omg fail '
         return HttpResponse(content=data, status=400, content_type='application/json')
 
 
@@ -211,7 +215,7 @@ def verify_USB(request):
         response_text = 'Click USB Upload to upload files'
     return JsonResponse({'data':response_data, 'usb_text' : response_text})
 
-def download_to_USB(request):
+def download_to_USBx(request):
     usb_name = get_usb_name()
     if usb_name is not None:
         local_files_dir = '/' + getpass.getuser() + '/FILES/'
@@ -240,6 +244,36 @@ def download_to_USB(request):
                 return JsonResponse ({'res': 'Copy aborted! [USB Unplugged/Insufficient Space?]'})
         return JsonResponse({'res': 'Copy successful'})
     return JsonResponse({'res':'Reinsert USB'})
+
+def download_to_USB(request):
+    usb_name = get_usb_name()
+    val = request.POST.get("counter", None)
+    if val is None:
+        return HttpResponseRedirect('/fileupload/new/')
+    if val == 'INIT':
+        global local_files
+        if usb_name is None:
+            return JsonResponse({'res': 'Reinsert USB'})
+        local_files = []
+        for root, folders, files in os.walk(telemetry):
+            for file in files:
+                if not os.path.isdir(file):
+                    local_files.append(os.path.join(root, file))
+        return JsonResponse({'value': '-1', 'length' : str(len(local_files))})
+    else:
+        try:
+            current = int(val)
+            global local_files
+            curr_file = local_files[current]
+            file_localized_name = curr_file[curr_file.find("telemetry") + len("telemetry/"):]
+            shutil.copy2(curr_file, usb_name + file_localized_name)
+            return JsonResponse({'value', str(current+1)})
+        except ValueError:
+            return JsonResponse({'res': 'Use an integer for manual inputs!'})
+        except IndexError:
+            return JsonResponse({'res': 'Files have been successfully copied!'})
+        except OSError:
+            return JsonResponse({'res': 'Copy error! USB unplugged/insufficient storage space?'})
 
 
 def split_dirs(text): #Splits the entire path to get the file name
