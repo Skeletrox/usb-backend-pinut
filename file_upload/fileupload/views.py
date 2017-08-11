@@ -36,7 +36,6 @@ user = None
 telemetry = None
 local_files = []
 
-
 class User_Permissions:
     def __init__(self, user):
         self.permissions = user.permission.get_permissions()
@@ -173,7 +172,7 @@ class EkFileCreateView(CreateView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
-	print data + ' omg fail '
+	    print data + ' omg fail '
         return HttpResponse(content=data, status=400, content_type='application/json')
 
 
