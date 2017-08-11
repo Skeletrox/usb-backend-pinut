@@ -30,7 +30,7 @@ def update_data(request):
     if request.method == 'POST':
         print 'GOT POST'
         global varlist
-        for key, value in varlist:
+        for key in varlist:
             print "textinput-%s" %(key)
             new_val = request.POST.get("textinput-" + key, None)
             print 'Should be %s' %(new_val)

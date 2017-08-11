@@ -6,7 +6,6 @@ import django
 from django.http import HttpResponse
 from django.conf import settings
 
-config_file = settings.CONFIG_FILE
 
 def extractit(path_of_file):
 
@@ -57,14 +56,8 @@ def extractit(path_of_file):
 
         #print content_list
 
-        with open(config_file) as res_file:
-            try:
-                json_data = json.load(res_file)
-                active_profile = json_data["active_profile"]
-                content_path = json_data[active_profile].get("unzip_content", "")
-                json_dir_path = json_data[active_profile].get("json_dir", "")
-            except:
-                return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
+        content_path = settings.UNZIP_CONTENT
+        json_dir_path = settings.JSON_DIR
         if not os.path.exists(content_path):
             os.makedirs(content_path)               
         if not os.path.exists(json_dir_path):

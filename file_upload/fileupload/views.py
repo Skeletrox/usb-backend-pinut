@@ -1,4 +1,4 @@
-import json, os, subprocess, getpass
+import json, os, subprocess, getpass,shutil,sys
 import logging
 
 from .USBFinder import attemptMount,transfer_file, get_usb_name
@@ -21,8 +21,6 @@ from django.conf import settings
 #=======
 
 staticFileLocRoot = None
-
-config_file = settings.CONFIG_FILE
 
 old_files = []
 files = []
@@ -129,20 +127,14 @@ def verify(request, optional=False):
         ############################################################
         # Load values from res.json file                           #
         ############################################################
-        with open(config_file) as res_file:
-            try:
-                json_data = json.load(res_file)
-                active_profile = json_data["active_profile"]
-                staticFileLocRoot = json_data[active_profile].get("media_root", "")
-               # print "staticFileLocRoot " + staticFileLocRoot
-               # staticFileLocRoot = json_data["global_vars"].get("media_root", "")
-            except:
-                return HttpResponse("<h1>Improperly configured resources file; contact sysadmin</h1>")
+        staticFileLocRoot = settings.MEDIA_ROOT
+        
         return HttpResponseRedirect('new/')    
     else:
         return render(request,'fileupload/LOGIN.html',{'invalid':'not a valid username or password',})
 
 #=======
+config_json_dir = settings.CONFIG_JSON_DIR
 
 class EkFileCreateView(CreateView):
     model = EkFile
@@ -150,18 +142,28 @@ class EkFileCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        print "self Object: "
         print self.object
         files = [serialize(self.object)]
+        #print "files " + files
         data = {'files': files}
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         print 'Before you send post request'
         print self.object.path_of_file
         print '-'*10 + 'WE GON EXTRACT IT YO' + '-'*10
-        files = extractit(self.object.path_of_file)
-        for f in files:
-            obj=Content(ekfile=self.object,filename=f)
-            obj.save()
+        print self.object.file
+        if(self.object.path_of_file.endswith(".json")):
+            if not os.path.exists(config_json_dir):
+                os.makedirs(config_json_dir)
+            shutil.copy2(self.object.path_of_file, config_json_dir)
+        else:
+            if(settings.ACTIVE_PROFILE == "ekstep"): 
+                files = extractit(self.object.path_of_file)
+                for f in files:
+                    obj=Content(ekfile=self.object,filename=f)
+                    obj.save()
+
         return response
 
     def form_invalid(self, form):
@@ -178,14 +180,18 @@ class EkFileDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         print 'Attempting to delete ' + str(self.object)
-        files = Content.objects.filter(ekfile = self.object.id)
-        filename = []
-        for f in files:
-                filename.append(f.filename)
-                f.delete()
-        deleteit(filename)
-        #deleteit({'folder_file':content_object.folder_file,'json_file':content_object.json_file})
-        #content_object.delete()
+        if(self.object.path_of_file.endswith(".json")):
+            json_file = unicode(self.object.file)
+            file_name = config_json_dir+json_file
+            os.remove(file_name)
+        else:
+            if(settings.ACTIVE_PROFILE == "ekstep"):
+                files = Content.objects.filter(ekfile = self.object.id)
+                filename = []
+                for f in files:
+                    filename.append(f.filename)
+                    f.delete()
+                deleteit(filename)
         self.object.delete()
         response = JSONResponse(True, mimetype=response_mimetype(request))
         response['Content-Disposition'] = 'inline; filename=files.json'

@@ -10,16 +10,7 @@ from shutil import copy2                                                        
 
 process = None
 
-config_file = settings.CONFIG_FILE
-with open(config_file) as res_file:
-    try:
-        json_data = json.load(res_file)
-        active_profile = json_data["active_profile"]
-        staticFileLocRoot = json_data[active_profile].get("content_root", "")
-                #print "staticFileLocRoot " + staticFileLocRoot
-        #staticFileLocRoot = json_data["global_vars"].get("media_root", "")
-    except:
-        staticFileLocRoot = '/'
+staticFileLocRoot = settings.CONTENT_ROOT
 
 def get_usb_name():
     lsblk_out = subprocess.check_output("lsblk", shell=True)

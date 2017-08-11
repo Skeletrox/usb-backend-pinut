@@ -74,15 +74,18 @@ def iter_vars():
             return None
     #active_profile = json_data["active_profile"]
     active_profile = get_active_profile()
-    list_of_vars = json_data.get(active_profile, {})
+    list_of_vars = json_data["available_profiles"][active_profile]
     return list_of_vars
 
 def update_vars(new_var_list):
+    with open (config_file, 'r') as res:
+        active_profile = get_active_profile()
+        json_data = json.load(res)
+        json_data["available_profiles"][active_profile] = new_var_list
+
     with open(config_file, 'w') as res:
         try:
-            active_profile = get_active_profile()
-            new_dict = {active_profile : new_var_list}
-            res.write(json.dumps(new_dict, sort_keys=True, indent=4))
+            res.write(json.dumps(json_data, sort_keys=True,indent=4))
             return True
         except:
             return False
