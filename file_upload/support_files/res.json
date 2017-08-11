@@ -16,7 +16,8 @@
             "server_root": "/home/pi/usb-backend-pinut/file_upload/", 
             "telemetry": "/var/www/ekstep/telemetry/", 
             "unzip_content": "/var/www/ekstep/content/", 
-            "usb_on_automount": "/media/"
+            "usb_on_automount": "/media/",
+            "usb_dir": "ecar_files"
         }, 
         "meghshala": {
             "accepted_extensions": [
@@ -33,7 +34,8 @@
             "server_root": "/home/pi/usb-backend-meghshala/file_upload/", 
             "telemetry": "/var/www/meghshala/telemetry/", 
             "unzip_content": "/var/www/meghshala/content/", 
-            "usb_on_automount": "/media/"
+            "usb_on_automount": "/media/",
+            "usb_dir": "data_files"
         }, 
         "pinut": {
             "accepted_extensions": [
@@ -54,7 +56,8 @@
             "server_root": "/home/pi/usb-backend-pinut/file_upload/", 
             "telemetry": "/var/www/pinut_data/telemetry/", 
             "unzip_content": "/var/www/pinut_data/content/", 
-            "usb_on_automount": "/media/"
+            "usb_on_automount": "/media/",
+            "usb_dir": "pinut_data"
         }
     }
 }

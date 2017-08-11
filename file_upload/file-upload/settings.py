@@ -22,6 +22,7 @@ with open(CONFIG_FILE) as res_file:
     USB_ON_AUTOMOUNT = json_data["available_profiles"][ACTIVE_PROFILE].get("usb_on_automount", "")
     SERVER_ROOT = json_data["available_profiles"][ACTIVE_PROFILE].get("server_root", "")
     ACCEPTED_EXTNS = json_data["available_profiles"][ACTIVE_PROFILE].get("accepted_extensions", "")
+    USB_DIR = json_data["available_profiles"][ACTIVE_PROFILE].get("usb_dir", "")
     print ACCEPTED_EXTNS
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

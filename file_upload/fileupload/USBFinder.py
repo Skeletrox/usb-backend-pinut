@@ -11,6 +11,7 @@ from shutil import copy2                                                        
 process = None
 
 staticFileLocRoot = settings.CONTENT_ROOT
+data_folder = settings.USB_DIR
 
 def get_usb_name():
     lsblk_out = subprocess.check_output("lsblk", shell=True)
@@ -65,7 +66,7 @@ def attemptMount():
                 break
     if media_dir is None:
         return None
-    os.chdir(media_dir)
+    os.chdir(media_dir + data_folder)
     temps = [name for name in os.listdir(".")]
     print 'Temporary files are ' + str(temps)
     files = []
