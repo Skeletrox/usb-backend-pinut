@@ -16,10 +16,7 @@ from django.urls import reverse
 from .extract import extractit
 from .deleteExtract import deleteit
 from distutils.dir_util import copy_tree
-#<<<<<<< HEAD
 from django.conf import settings
-#staticFileLoc = '/file-upload/media/'
-#=======
 
 staticFileLocRoot = None
 
@@ -148,15 +145,15 @@ class EkFileCreateView(CreateView):
         self.object = form.save()
         print "self Object: "
         print self.object
+        self.object.file_upload = self.object.slug
         files = [serialize(self.object)]
-        #print "files " + files
         data = {'files': files}
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         print 'Before you send post request'
         print self.object.path_of_file
         print '-'*10 + 'WE GON EXTRACT IT YO' + '-'*10
-        print self.object.file
+        #print self.object.slug
         if(self.object.path_of_file.endswith(".json")):
             if not os.path.exists(config_json_dir):
                 os.makedirs(config_json_dir)
@@ -185,7 +182,7 @@ class EkFileDeleteView(DeleteView):
         self.object = self.get_object()
         print 'Attempting to delete ' + str(self.object)
         if(self.object.path_of_file.endswith(".json")):
-            json_file = unicode(self.object.file)
+            json_file = unicode(self.object.file_upload)
             file_name = config_json_dir+json_file
             os.remove(file_name)
         else:

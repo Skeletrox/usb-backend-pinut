@@ -10,12 +10,14 @@ def order_name(name):
     return name[:10] + "..." + name[-7:]
 
 
-def serialize(instance, file_attr='file'):
+def serialize(instance, file_attr='file_upload'):
     
     obj = getattr(instance, file_attr)
+    print "obj name = " + obj.name
     return {
         'url': obj.url,
-        'name': order_name(obj.name),
+        #'name': order_name(obj.name),
+        'name': obj.name,
         'type': mimetypes.guess_type(obj.path)[0] or 'image/png',
         'thumbnailUrl': obj.url,
         'size': obj.size,
