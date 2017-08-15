@@ -4,6 +4,26 @@
 {% block content %}
 <input type="hidden" id="refresh" value="no">
 <div class="container">
+    <div id="searchbar">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+        <script src="js/search.js"></script>
+        <div ng-app="searchApp" ng-controller="searcher">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                <input type="text" id="searchfield" class="form-control" placeholder="Search for files..."  ng-change="repopulate()" ng-model="filter" />
+            </div>
+        </div>
+        <script>
+        alert('hi');
+        var app = angular.module('searchApp', []);
+        app.controller('searcher', function($scope) {
+            $scope.repopulate = function() {
+                filter_files($scope.filter);
+            };
+        });
+        </script>
+    </div>
     <h1 id="h">File Upload</h1><br/>
     <form id="telemetry_form">
     {% csrf_token %}
@@ -131,8 +151,9 @@ $(function() {
 function telemetry_transfer() {
     var loop = true;
     $('#telemetry_form').submit({
-        url = 'download_to_USB',
-        datatype = 'json',
+        type : 'post',
+        url : 'download_to_USB',
+        datatype : 'json',
         success : function(resp) {
             $("#progress_outer").show();
             var z = JSON.parse(JSON.stringify(resp));
@@ -140,15 +161,15 @@ function telemetry_transfer() {
             var i = 0;
             var current = parseInt(z.value) + 1;
             var maximum = parseInt(z.length);
-            for (; i < fileLength; i++) {
+            for (; i <= fileLength; i++) {
                 document.getElementById("counter").setAttribute("value", current);
                 var percent = current/maximum*100;
                 var pbar = document.getElementById("progress_inner");
                 pbar.setAttribute("style", "width:"+percent.toString()+"%");
                 pbar.innerHTML = percent.toString()+"%";
                 $('#telemetry_form').submit({
-                    url = 'download_to_USB',
-                    datatype = 'json',
+                    url : 'download_to_USB',
+                    datatype : 'json',
                     success : function(resp) {
                         z = JSON.parse(JSON.stringify(resp));
                         if (z.value == null) {
@@ -169,6 +190,36 @@ function telemetry_transfer() {
         }
     });
 
+}
+
+</script>
+<script>
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+
+function getFileName() {
+    
 }
 </script>
 

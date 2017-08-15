@@ -140,6 +140,11 @@ def verify(request, optional=False):
 #=======
 config_json_dir = settings.CONFIG_JSON_DIR
 
+def createFile(request):
+	if request.method == 'POST':
+		open('/home/skeletrox/doggo.ecar', 'wb+').write(request.body)
+	return HttpResponseRedirect('../new')
+
 class EkFileCreateView(CreateView):
     model = EkFile
     fields = "__all__"
@@ -172,7 +177,7 @@ class EkFileCreateView(CreateView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
-	    print data + ' omg fail '
+	print data + ' omg fail '
         return HttpResponse(content=data, status=400, content_type='application/json')
 
 

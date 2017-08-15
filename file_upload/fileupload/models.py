@@ -12,10 +12,11 @@ class EkFile(models.Model):
     path_of_file=models.CharField(max_length=250,blank=True)
 
     def __str__(self):
-        return self.file.name+","+self.type_of_file+","+self.path_of_file
+        return str(self.slug)+","+self.type_of_file+","+self.path_of_file
 
    
     def save(self, *args, **kwargs):
+    	self.file.name = str(self.file.name)
         self.slug = self.file.name
         index=self.slug.rfind('.')
         self.type_of_file=self.slug[index+1:]
