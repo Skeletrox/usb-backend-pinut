@@ -6,7 +6,7 @@ function filter_files(string) {
 	for (var i = 0; i < file_count; i++) {
 		element = files[i];
 		name = element.getAttribute("name");
-		if (name.substring(name.lastIndexOf('/'), name.length).search(string) != -1) {
+		if (name.substring(name.lastIndexOf('/'), name.lastIndexOf('_do_')).search(string) != -1) {
 			$(element).show();
 		}
 		else {
