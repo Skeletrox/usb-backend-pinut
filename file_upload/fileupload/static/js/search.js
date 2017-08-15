@@ -1,17 +1,16 @@
 function filter_files(string) {
 	var x = 0;
-	while (true) {
-		var tr_str = "file_" + x;
-		var element = document.getElementById(tr_str);
-		if (element == null) {
-			return;
-		}
-		if (element.getAttribute("name").search(string) != -1) {
+	var table = document.getElementById("file_table");
+	var files = table.childNodes;
+	var file_count = files.length;
+	for (var i = 0; i < file_count; i++) {
+		element = files[i];
+		name = element.getAttribute("name");
+		if (name.substring(name.lastIndexOf('/'), name.length).search(string) != -1) {
 			$(element).show();
 		}
 		else {
 			$(element).hide();
 		}
-		x += 1;
 	}
 }

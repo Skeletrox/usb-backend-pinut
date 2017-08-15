@@ -27,7 +27,7 @@
     {% csrf_token %}
         <input type="hidden" name="counter" id="counter" value="INIT">
     </form>
-    <div class="jumbotron"><p id = 'usb_text'></p></div>
+    <!--div class="jumbotron"><p id = 'usb_text'></p></div-->
     <br>
     <div class="progress" id="progress_outer"> 
         <div class = "progress-bar progress-bar-striped active" role="progressbar"
@@ -80,7 +80,7 @@
             </div>
         </div>
         <!-- The table listing the files available for upload/download -->
-        <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+        <table role="presentation" class="table table-striped"><tbody class="files" id="file_table"></tbody></table>
     </form>
     <br>
     
@@ -142,7 +142,7 @@ $(function() {
             var obj = JSON.parse(JSON.stringify(response));
             document.getElementById("usb").setAttribute("class", "btn btn-primay start " + obj.data);
             document.getElementById("usb_down").setAttribute("class", "btn btn-primay start " + obj.data);
-            document.getElementById("usb_text").innerHTML = obj.usb_text;
+            //document.getElementById("usb_text").innerHTML = obj.usb_text;
         });
 });
 
@@ -171,7 +171,7 @@ function telemetry_transfer() {
                     success : function(resp) {
                         z = JSON.parse(JSON.stringify(resp));
                         if (z.value == null) {
-                            document.getElementById("usb_text").innerHTML = z.res;
+                            //document.getElementById("usb_text").innerHTML = z.res;
                             loop = false;
                             return;
                         }

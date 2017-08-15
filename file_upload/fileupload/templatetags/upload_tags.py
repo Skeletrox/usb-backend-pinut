@@ -9,7 +9,7 @@ def upload_js():
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-upload fade" id="file_up_{%=i%}>
+    <tr class="template-upload fade" id="file_up_{%=i%}">
         <td>
             <span class="preview"></span>
         </td>
@@ -39,7 +39,7 @@ def upload_js():
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download fade" id="file_{%=i%}" name="{%=file.name%}">
+    <tr class="template-download fade" id="file_{%=i%}" name="{%=file.url%}">
         <!--td>
             <span class="preview">
                 {% if (file.thumbnailUrl) { %}
