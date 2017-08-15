@@ -39,7 +39,7 @@ def upload_js():
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download fade" id="file_{%=i%}">
+    <tr class="template-download fade" id="file_{%=i%}" name="{%=file.name%}">
         <!--td>
             <span class="preview">
                 {% if (file.thumbnailUrl) { %}
@@ -59,7 +59,7 @@ def upload_js():
             <span class="size">{%=o.formatFileSize(file.size)%}</span>
         </td>
         <td>
-            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %} id="up_table_{{ forloop.counter }}">
+            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %} id="up_table_{%=i%}">
                 <i class="glyphicon glyphicon-trash"></i>
                 <span>{%=locale.fileupload.destroy%}</span>
             </button>
