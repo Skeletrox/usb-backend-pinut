@@ -9,7 +9,8 @@
 <body>
         <div class = "col-md-2 border-right-1">
             <ul class = "nav nav-pills nav-stacked">
-            <li><a href = 'javascript:void(0);'><b>User: <span id="username"></span></b></a></li>
+                <li id="logo_wrapper"></li>
+                <li><a href = 'javascript:void(0);'><b>User: <span id="username"></span></b></a></li>
                 <li id = "file_upload"><a href="{% url 'fileupload:upload-new' %}">File Upload</a></li>
                 <li id = "ssid_mod"><a href="{% url 'ssidmod:index' %}">SSID Modification</a></li>
                 <li id = "captive_mod"><a href="{% url 'changecaptive:index' %}">Captive Portal Modification</a></li>
@@ -39,7 +40,8 @@
     <link rel="stylesheet" href="/static/css/jquery.fileupload-ui.css">
     <!-- CSS adjustments for browsers with JavaScript disabled -->
     <script>
-    $(function() {	
+    $(function() {
+        document.getElementById("logo_wrapper").innerHTML = '<img src="/static/logo.png" height="90%" width="90%" alt="company_logo">';
     	$.getJSON("{% url 'backadmin:return_permissions' %}", function(response) {
         	var obj = JSON.parse(JSON.stringify(response));
             if (obj.user_name == '_null_') {
