@@ -144,7 +144,7 @@ class EkFileCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save()
         print "self Object: "
-        print self.object
+        print unicode(self.object)
         self.object.file_upload = self.object.slug
         files = [serialize(self.object)]
         data = {'files': files}
@@ -180,7 +180,7 @@ class EkFileDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        print 'Attempting to delete ' + str(self.object)
+        print 'Attempting to delete ' + unicode(self.object)
         if(self.object.path_of_file.endswith(".json")):
             json_file = unicode(self.object.file_upload)
             file_name = config_json_dir+json_file
@@ -266,7 +266,7 @@ def download_to_USB(request):
     else:
         try:
             current = int(val)
-            global local_files
+#            global local_files
             curr_file = local_files[current]
             file_localized_name = curr_file[curr_file.find("telemetry") + len("telemetry/"):]
             shutil.copy2(curr_file, usb_name + file_localized_name)

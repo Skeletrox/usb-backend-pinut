@@ -4,21 +4,21 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.conf import settings
-
 # Create your models here.
 
-'''
+
 def r_file_name(instance, filename):
-    print "filename:: " + filename
+    filename = filename.encode('utf-8')
+    #print "filename:: " + filename
     #path = settings.CONTENT_ROOT        
     format = filename
-    print "format:: " + format
+    #print "format:: " + format
     return format
-'''
+
 content_root = settings.CONTENT_ROOT
 
 class EkFile(models.Model):
-    file_upload = models.FileField(upload_to='')
+    file_upload = models.FileField(upload_to=r_file_name)
     slug = models.SlugField(max_length=50, blank=True)
     type_of_file=models.CharField(max_length=50,blank=True)
     path_of_file=models.CharField(max_length=250,blank=True)
@@ -29,7 +29,6 @@ class EkFile(models.Model):
 
    
     def save(self, *args, **kwargs):
-        self.file_upload.name = str(self.file_upload.name)
         self.slug = self.file_upload.name
         index=self.slug.rfind('.')
         self.type_of_file = self.slug[index+1:]
