@@ -215,7 +215,7 @@ function filter_table(string) {
     for (var i = 0; i < file_rows.length; i++) {
       var row = file_rows[i];
       name = row.getAttribute('id');
-      if (name.substring(name.lastIndexOf('/'), name.lastIndexOf('_do_')).search(string) != -1) {
+      if (name.substring(name.lastIndexOf('/'), name.length).search(string) != -1) {
         $(row).show();
       }
       else {

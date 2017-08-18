@@ -12,6 +12,7 @@ process = None
 
 staticFileLocRoot = settings.CONTENT_ROOT
 data_folder = settings.USB_DIR
+extns = settings.ACCEPTED_EXTNS
 
 def get_usb_name():
     lsblk_out = subprocess.check_output("lsblk", shell=True)
@@ -75,8 +76,10 @@ def attemptMount():
     files = []
     for root, subfolders, usb_files in os.walk("."):
         for name in usb_files:
-            if (not os.path.isdir(name)) and (name[-5:] == '.ecar' or name == 'content.json'):
-                files.append(os.path.join(root, name))
+            if (not os.path.isdir(name)):
+                if(name.endswith(tuple(extns))):
+                    #if (not os.path.isdir(name)) and (name[-5:] == '.data' or name == 'content.json'):
+                    files.append(os.path.join(root, name))
     return files
 
 def main():

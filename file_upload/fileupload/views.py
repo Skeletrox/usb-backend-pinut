@@ -294,8 +294,9 @@ def transfer(request):
             if request.method == 'GET':
                 new_files = attemptMount()
                 if new_files is None:
+                    print "new_files none"
                     return HttpResponseRedirect('../new')
-                old_files = [fModel.file for fModel in EkFile.objects.all()]
+                old_files = [fModel.file_upload for fModel in EkFile.objects.all()]
                 files = [thing for thing in new_files if split_dirs(thing) not in old_files]
                 total_done = 0
                 total_amount = len(files)
@@ -307,18 +308,17 @@ def transfer(request):
             if len(files) > 0:
                 temp_value = 0
                 for file in files:
-                    if file != 'content.json':
-                        try:
-                            #Runs each time. Can be optimized further to handle JSON requests and responses
-                            value = split_dirs(file)
-                            x = EkFile.objects.get(file_upload=str(value))
-                        except EkFile.DoesNotExist:
-                            file_size = os.stat(file).st_size
-                            value = split_dirs(file)
-                            fModel = EkFile(id = temp_value+1, file_upload = str(value))
-                            temp_value += 1
-                            if fModel not in files_existing:
-                                files_existing.append(fModel)
+                    try:
+                        #Runs each time. Can be optimized further to handle JSON requests and responses
+                        value = split_dirs(file)
+                        x = EkFile.objects.get(file_upload=str(value))
+                    except EkFile.DoesNotExist:
+                        file_size = os.stat(file).st_size
+                        value = split_dirs(file)
+                        fModel = EkFile(id = temp_value+1, file_upload = str(value))
+                        temp_value += 1
+                        if fModel not in files_existing:
+                            files_existing.append(fModel)
                 try:
                     if len(files_existing) == 0:
                         raise NoFilesError('No Files')
@@ -347,14 +347,20 @@ def transfer(request):
                 percentage_done = int(total_done*100/total_amount)
             #Code below updates the file transferred list
             if file_to_transfer is not None:
+                print "file_to_transfer " + file_to_transfer
                 value = split_dirs(file_to_transfer)
                 file_to_save = EkFile(id = count, file_upload = value)
                 file_to_save.save()
-#<<<<<<< HEAD
-                files2 = extractit(file_to_save.path_of_file)
-                for f in files2:
-                        obj=Content(ekfile=file_to_save,filename=f)
-                        obj.save()
+                if(value.endswith(".json")):
+                    if not os.path.exists(config_json_dir):
+                        os.makedirs(config_json_dir)
+                    shutil.copy2(file_to_save.path_of_file, config_json_dir)
+                else:
+                    if(settings.ACTIVE_PROFILE == "ekstep"):
+                        files2 = extractit(file_to_save.path_of_file)
+                        for f in files2:
+                            obj=Content(ekfile=file_to_save,filename=f)
+                            obj.save()
                 print '[Z]Saved ' + value
                 #list_of_files.append(file_to_save)
                 #files.remove(file_to_transfer)
