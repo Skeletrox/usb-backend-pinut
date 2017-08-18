@@ -3,9 +3,6 @@
 {% block content %}
 
 <div class = "container">
-	<div class="jumbotron">
-		<p>{{ message }}</p>
-	</div>
 	<form id="submit_form" name="submit_form" action="update_data/" method="POST">
 		{% csrf_token %}
 		{% for var, value in var_dict.items %}
@@ -17,9 +14,14 @@
 </div>
  <script src="/static/js/bootstrap.min.js"></script>
 <script>
-	function update () {
-		document.getElementById("submit_form").submit();
+$(function() {
+	if ('{{ message }}' != 'ok') {
+		alert('{{ message }}');
 	}
+});
+function update () {
+	document.getElementById("submit_form").submit();
+}
 </script>
 
 {% endblock %}
