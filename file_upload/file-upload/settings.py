@@ -98,6 +98,8 @@ DATABASES = {
         }
 
 
+LC_ALL="en_US.UTF-8"
+LC_LANG="en_US.UTF-8"
 
 LANGUAGE_CODE = 'en-us'
 
