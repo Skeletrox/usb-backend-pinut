@@ -212,12 +212,10 @@ class EkFileListView(ListView):
 def verify_USB(request):
     value = attemptMount()
     response_data = 'disabled'
-    response_text = 'Please insert USB and refresh'
     if value is not None:
         response_data = 'active '
-        response_text = 'Click USB Upload to upload files'
-    return JsonResponse({'data':response_data, 'usb_text' : response_text})
-
+    return JsonResponse({'data':response_data})
+'''
 def download_to_USBx(request):
     usb_name = get_usb_name()
     if usb_name is not None:
@@ -247,16 +245,18 @@ def download_to_USBx(request):
                 return JsonResponse ({'res': 'Copy aborted! [USB Unplugged/Insufficient Space?]'})
         return JsonResponse({'res': 'Copy successful'})
     return JsonResponse({'res':'Reinsert USB'})
-
+'''
 def download_to_USB(request):
+    print request.method
     usb_name = get_usb_name()
     val = request.POST.get("counter", None)
+    print "HAI " + str(val)
     if val is None:
-        return HttpResponseRedirect('/fileupload/new/')
+        return HttpResponseRedirect('/upload/new/')
     if val == 'INIT':
         global local_files
         if usb_name is None:
-            return JsonResponse({'res': 'Reinsert USB'})
+            return HttpResponseRedirect('/upload/new/')
         local_files = []
         for root, folders, files in os.walk(telemetry):
             for file in files:
@@ -311,11 +311,11 @@ def transfer(request):
                         try:
                             #Runs each time. Can be optimized further to handle JSON requests and responses
                             value = split_dirs(file)
-                            x = EkFile.objects.get(file=str(value))
+                            x = EkFile.objects.get(file_upload=str(value))
                         except EkFile.DoesNotExist:
                             file_size = os.stat(file).st_size
                             value = split_dirs(file)
-                            fModel = EkFile(id = temp_value+1, file = str(value))
+                            fModel = EkFile(id = temp_value+1, file_upload = str(value))
                             temp_value += 1
                             if fModel not in files_existing:
                                 files_existing.append(fModel)
@@ -348,7 +348,7 @@ def transfer(request):
             #Code below updates the file transferred list
             if file_to_transfer is not None:
                 value = split_dirs(file_to_transfer)
-                file_to_save = EkFile(id = count, file = value)
+                file_to_save = EkFile(id = count, file_upload = value)
                 file_to_save.save()
 #<<<<<<< HEAD
                 files2 = extractit(file_to_save.path_of_file)

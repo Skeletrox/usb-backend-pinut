@@ -9,7 +9,7 @@ def upload_js():
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-upload fade">
+    <tr class="template-upload fade" id="up_{%=file.url%}">
         <td>
             <span class="preview"></span>
         </td>
@@ -32,12 +32,6 @@ def upload_js():
                     <span>{%=locale.fileupload.start%}</span>
                 </button>
             {% } %}
-            {% if (!i) { %}
-                <button class="btn btn-warning cancel">
-                    <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>{%=locale.fileupload.cancel%}</span>
-                </button>
-            {% } %}
         </td>
     </tr>
 {% } %}
@@ -45,7 +39,7 @@ def upload_js():
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download fade" >
+    <tr class="template-download fade" id="{%=file.url%}">
         <!--td>
             <span class="preview">
                 {% if (file.thumbnailUrl) { %}

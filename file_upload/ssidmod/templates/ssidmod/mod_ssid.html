@@ -12,28 +12,17 @@
 		</form>
 		{% if result_text %}
 		<div class="row" align="CENTER">
-			<span class = "{{ outcome }} text-darken-2">
+			<span class = "{{ outcome }}">
 				{{ result_text }}
 			</span>
 		</div>
 		{% endif %}
 	</div>
+	<script src="/static/js/bootstrap.min.js"></script>
 	<script>
 		function submit_values() {
 			document.getElementById('ssid_form').submit();
 		}
 	</script>
-	<style>
-		.demo-card-wide.mdl-card {
-			width: 100%;
-		}
-		.demo-card-wide > .mdl-card__title {
-			color : #383839;
-		}
-	</style>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 {% endblock %}

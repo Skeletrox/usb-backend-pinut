@@ -66,7 +66,10 @@ def attemptMount():
                 break
     if media_dir is None:
         return None
-    os.chdir(media_dir + data_folder)
+    try:
+        os.chdir(media_dir + '/' + data_folder)
+    except:
+        return None
     temps = [name for name in os.listdir(".")]
     print 'Temporary files are ' + str(temps)
     files = []

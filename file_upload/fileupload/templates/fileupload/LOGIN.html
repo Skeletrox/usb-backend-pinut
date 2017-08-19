@@ -3,11 +3,10 @@
 <head>
 <title>File Upload Login</title>
 <link rel="stylesheet" href="../static/css/login.css">
-<!img src="images.jpg" style="width:200px;right:200px;height:228px;margin:10px;">
 </head>
 <body>
 <div class="login-page">
-       <form  class="form" action="{% url 'fileupload:verify' %}" method="post">
+    <form  class="form" action="{% url 'fileupload:verify' %}" method="post">
     {%csrf_token%}
      {% if invalid %}
            <p>{{invalid}}</p>
@@ -16,7 +15,10 @@
       <br>
       <input type="password" id="password" name="password" placeholder="password">
       <br>
-     <Button type="submit">Login</Button>
+      <button type="submit">Login</button>
+      <div class="container">
+        <img src="/static/logo.png" alt="logo"/>
+      </div>
     </form>
 </div>
 </body>

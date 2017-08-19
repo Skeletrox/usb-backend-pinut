@@ -3,11 +3,13 @@
 <head>
 <title>File Upload Login</title>
 <link rel="stylesheet" href="../static/css/login.css">
-<!img src="images.jpg" style="width:200px;right:200px;height:228px;margin:10px;">
 </head>
 <body>
 <div class="login-page">
-       <form  class="form" action="{% url 'backadmin:verify' %}" method="post">
+  <form  class="form" action="{% url 'backadmin:verify' %}" method="post">
+  <div align="CENTER">
+    <img src="/static/logo.png" alt="logo"/>
+  </div>
     {%csrf_token%}
      {% if invalid %}
            <p>{{invalid}}</p>
@@ -17,7 +19,7 @@
       <input type="password" id="password" name="password" placeholder="password">
       <br>
      <Button type="submit">Login</Button>
-    </form>
+  </form>
 </div>
 </body>
 </html>

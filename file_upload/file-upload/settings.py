@@ -115,6 +115,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
         'file-upload/static',
+        '/var/www/ekstep/',
         ]
 
 MEDIA_URL = CONTENT_ROOT

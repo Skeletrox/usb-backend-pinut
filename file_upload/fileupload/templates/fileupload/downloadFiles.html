@@ -24,7 +24,7 @@
 				<!-- Code to open a box and get the files here -->
 				<p>Files being downloaded:
 					{% for file in files_existing %}
-						<p><b>{{ file.file }}: </b><!-- {{ file.file_desc }} --></p><br/>
+						<p><b>{{ file.file_upload }}</b><!-- {{ file.file_desc }} --></p><br/>
 					{% endfor  %}
 				<form action='../return_USB/' method="post" name="InitUSB">
 				{% csrf_token %}
