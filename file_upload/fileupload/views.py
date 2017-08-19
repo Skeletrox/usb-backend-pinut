@@ -215,7 +215,7 @@ def verify_USB(request):
     if value is not None:
         response_data = 'active '
     return JsonResponse({'data':response_data})
-'''
+
 def download_to_USBx(request):
     usb_name = get_usb_name()
     if usb_name is not None:
@@ -245,7 +245,7 @@ def download_to_USBx(request):
                 return JsonResponse ({'res': 'Copy aborted! [USB Unplugged/Insufficient Space?]'})
         return JsonResponse({'res': 'Copy successful'})
     return JsonResponse({'res':'Reinsert USB'})
-'''
+
 def download_to_USB(request):
     print request.method
     usb_name = get_usb_name()
