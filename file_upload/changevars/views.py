@@ -7,18 +7,23 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 # Create your views here.
 varlist = None
+varlist_full = None
+changeable_vars=('cdn_url', 'accepted_extensions', 'config_json_name','telemetry','profile_name','usb_dir')
 
 def load_vars():
-	global varlist
-	varlist = iter_vars()
+	global varlist, changeable_vars, varlist_full
+	varlist_full = iter_vars()
 	message = None
-	if varlist == None:
+	if varlist_full == None:
 		message = "No JSON File!"
-	elif len(varlist) < 1:
-		varlist = None
+	elif len(varlist_full) < 1:
+		varlist_full = None
 		message = "No global vars in JSON File!"
 	else:
-		message = "Loaded variables!"
+		message = "ok"
+	varlist={}
+	for var in changeable_vars:
+		varlist[var] = varlist_full[var]
 	print varlist
 	return {'var_dict' : varlist, 'message' : message}
 
@@ -29,13 +34,13 @@ def load_page(request):
 def update_data(request):
     if request.method == 'POST':
         print 'GOT POST'
-        global varlist
+        global varlist, varlist_full
         for key in varlist:
             print "textinput-%s" %(key)
             new_val = request.POST.get("textinput-" + key, None)
             print 'Should be %s' %(new_val)
             if len(new_val) > 0:
-                varlist[key] = new_val
+                varlist_full[key] = new_val
         print varlist
         update_vars(varlist)
     return HttpResponseRedirect("../")

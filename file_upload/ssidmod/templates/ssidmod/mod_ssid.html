@@ -8,6 +8,16 @@
 			<font size="3em">
 				<input class="form-control" type="text" id="ssid" name="ssid_name" placeholder = "Currently: {{ ssid_name }}"><hr />
 			</font>
+			<div id="password-optional">
+				<input class="form-control" type="password" id="password" name="password" placeholder = "Enter optional password"><hr />
+			</div>
+			<div class="form-group">
+				<label for="apselect">Select Mode:</label>
+				<select class="form-control" id="apselect" name="apselect" onchange="verify()">
+					<option value="apmode">AP Mode</option>
+					<option value="hostmode">Host Mode</option>
+				</select>
+			</div>
 			<button class = "btn btn-primary" onclick = "submit_values()">Change SSID</button> 
 		</form>
 		{% if result_text %}
@@ -20,9 +30,26 @@
 	</div>
 	<script src="/static/js/bootstrap.min.js"></script>
 	<script>
-		function submit_values() {
-			document.getElementById('ssid_form').submit();
+	$(function() {
+		$('#password-optional').hide();
+	});
+	function submit_values() {
+		var z = document.getElementById('ssid').value;
+		if (z.length < 1) {
+			alert('Please enter SSID');
+			return;
 		}
+		document.getElementById('ssid_form').submit();
+	}
+	function verify() {
+		var z = document.getElementById('apselect').value;
+		if (z == 'hostmode') {
+			$('#password-optional').show();
+		}
+		else {
+			$('#password-optional').hide();
+		}
+	}
 	</script>
 
 {% endblock %}
