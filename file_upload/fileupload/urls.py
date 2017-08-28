@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^transfer/$', views.transfer, name="transfer"),
     url(r'^verify_USB/$', views.verify_USB, name="verifyusb"),
     url(r'^user_logout/$', views.user_logout, name='userlogout'),
-    url(r'^download_to_usbx/$', views.download_to_USB, name='downloadtousb'),
+    url(r'^download_to_USB/$', views.download_to_USBx, name='downloadtousb'),
+    url(r'^return_exts/$', views.serve_extensions, name="serve_exts")
 ]

@@ -32,6 +32,7 @@ perm_dict = None
 user = None
 telemetry = None
 local_files = []
+allowed_exts = settings.ACCEPTED_EXTNS
 
 class User_Permissions:
     def __init__(self, user):
@@ -113,9 +114,9 @@ def verify(request, optional=False):
     try:
         user=User.objects.get(username=request.POST['email'])
         logger = logging.getLogger(__name__)
-        password=request.POST['password']
+        password=request.POST.get('password', '')
     #_,salt,hashpw=user.password.split('$')
-        logger.error(request.POST['email']+","+request.POST['password']+" \n next line")
+        logger.error(request.POST.get('email', '')+","+request.POST.get('password', '')+" \n")
         logger.error(user.password+", username is "+user.username)
         flag='REAL'
     except User.DoesNotExist:
@@ -216,6 +217,10 @@ def verify_USB(request):
         response_data = 'active '
     return JsonResponse({'data':response_data})
 
+def serve_extensions(requests):
+    global allowed_exts
+    return JSONResponse({"exts":allowed_exts})
+
 def download_to_USBx(request):
     usb_name = get_usb_name()
     if usb_name is not None:
@@ -246,6 +251,7 @@ def download_to_USBx(request):
         return JsonResponse({'res': 'Copy successful'})
     return JsonResponse({'res':'Reinsert USB'})
 
+'''
 def download_to_USB(request):
     print request.method
     usb_name = get_usb_name()
@@ -277,6 +283,8 @@ def download_to_USB(request):
             return JsonResponse({'res': 'Files have been successfully copied!'})
         except OSError:
             return JsonResponse({'res': 'Copy error! USB unplugged/insufficient storage space?'})
+'''
+
 
 def split_dirs(text): #Splits the entire path to get the file name
     splitty = text.split('/')
