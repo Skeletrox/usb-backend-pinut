@@ -28,7 +28,7 @@
                 <span class="btn btn-success fileinput-button" id="dev_up" hidden="true">
                     <i class="glyphicon glyphicon-plus"></i>
                     <span>Add files...</span>
-                    <input type="file" name="file_upload" multiple accept=".data">
+                    <input type="file" name="file_upload" multiple accept=".data" id="file_in">
                 </span>
                 <!--button type="submit" class="btn btn-primary start">
                     <i class="glyphicon glyphicon-upload"></i>
@@ -134,10 +134,21 @@ $(function() {
             	$('[data-toggle="tooltip"]').tooltip();
             }
         });
-    
+    $.getJSON('../return_exts/', function(response) {
+        var ob = JSON.parse(JSON.stringify(response));
+        var exts = ob['exts'];
+       // alert(exts);
+        var extstring = '';
+        for (var i = 0; i < exts.length; i++) {
+            extstring = extstring.concat(', ', exts[i]);
+        }
+        extstring = extstring.substring(2, extstring.length);
+        document.getElementById("file_in").setAttribute("accept", extstring);
+
+    });
     $("#search").keyup(function() {
     	var searchString = $("#search").val();
-    	filter_table(searchString);
+    	filter_table(searchString.toLowerCase());
     });
 });
 
@@ -214,7 +225,7 @@ function filter_table(string) {
     file_rows = table.childNodes;
     for (var i = 0; i < file_rows.length; i++) {
       var row = file_rows[i];
-      name = row.getAttribute('id');
+      name = row.getAttribute('id').toLowerCase();
       if (name.substring(name.lastIndexOf('/'), name.length).search(string) != -1) {
         $(row).show();
       }
